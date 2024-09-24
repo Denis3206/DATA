@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PlayerToken from './tokenplayer.jsx';
+import PlayerBench from './playerbench.jsx';
 import '../style/formation.css';
 
 
@@ -40,7 +41,6 @@ const Formation = ({
   setMainPlayers, 
   substitutes, 
   setSubstitutes, 
-  onSelectPlayer, 
   selectedPlayer, 
   setSelectedPlayer 
 }) => {
@@ -150,7 +150,7 @@ const Formation = ({
   const isRemoveButtonEnabled = selectedPosition !== null && mainPlayers[selectedPosition] !== null;
 
   return (
-    <div>
+    <div className="field-and-bench-container">
       <div className="formation-container">
         {positions.map((pos, index) => (
           <div
@@ -175,17 +175,11 @@ const Formation = ({
         </button>
       </div>
 
-      <div className="bench-container">
-        {substitutes.map((substitute) => (
-          <div
-            key={substitute.id}
-            onClick={() => handleSubstituteClick(substitute)}
-            className={`bench-player ${substitute.id === selectedPlayer?.id ? 'selected-substitute' : ''}`}
-          >
-            <PlayerToken player={substitute} />
-          </div>
-        ))}
-      </div>
+      <PlayerBench 
+        players={substitutes} 
+        onSelectPlayer={handleSubstituteClick} // Pasar el manejador de clics
+        selectedPlayer={selectedPlayer} 
+      />
 
       {selectedPlayer && (
         <div className="info">

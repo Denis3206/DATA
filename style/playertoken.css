@@ -1,50 +1,36 @@
 /* playertoken.css */
 
 .player-token {
-    position: absolute;  
-    width: 50px; /* Tamaño del token */
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid #000; /* Borde para la visibilidad */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff; /* Fondo blanco para las posiciones vacías */
-    font-size: 14px; /* Tamaño de la fuente */
-    text-align: center;
-    color: #000; /* Color del texto */
-    margin: 0;
-    box-sizing: border-box;
-   
-  }
+  position: absolute; /* Se asegura que los tokens no cambien el tamaño del contenedor */
+  width: 50px; /* Tamaño fijo del token */
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  font-size: 14px;
+  text-align: center;
+  color: #000;
+  margin: 0;
+  box-sizing: border-box;
+}
+
   
   .player-token.filled {
-    background-color: #e0e0e0; /* Color de fondo para los tokens ocupados */
+    background-color: #cce5ff;
   }
   
   .player-token.empty {
-    background-color: #f0f0f0; /* Color de fondo para los tokens vacíos */
+    background-color: #fff;
   }
   
-/*   .bench-container {
-    margin-top: 20px;
-  } */
   
-  /* .bench-player {
-    width: 50px; 
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #000; 
-    background-color: #f0f0f0; 
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 50%;
-  } 
-  */
+  .selected-position {
+    border: 2px solid #007bff;
+  }
   
   .selected-substitute {
-    border-color: #007bff; /* Color del borde del suplente seleccionado */
+    border: 2px solid #007bff;
   }
-  

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../style/playerbench.css'; // Importa el archivo CSS
+import '../style/playerbench.css';
 
 const PlayerBench = ({ players, onSelectPlayer, selectedPlayer }) => (
   <div className="bench-container">

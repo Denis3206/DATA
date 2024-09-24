@@ -1,27 +1,29 @@
 .bench-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  
-  .bench-player {
-    width: 70px;
-    height: 70px;
-    border-radius: 10px;
-    background: #f5f5f5;
-    border: 2px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
-    width: 60px;
-    align-items: center;
-    background-color: #f5f5f5;
-    margin: 5px;
-  }
-  
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  width: 100%; 
+  max-width: 900px; /* Mantener el ancho igual al del campo */
+  height: 100px;
+  box-sizing: border-box;
+  flex-shrink: 0; /* Evitar que el banco se encoja */
+  min-width: 900px; /* Mínimo ancho para asegurarse de que no se reduzca */
+}
+
+.bench-player {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 5px;
+  border-radius: 50%;
+  border: 2px solid #000; /* Borde para la visibilidad */
+  flex-grow: 0; /* Los elementos no crecen */
+  flex-shrink: 0; /* Los elementos no se encogen */
+}
+
   .bench-player:hover {
     background-color: #e0e0e0; /* Color de fondo más oscuro al pasar el ratón */
   }
