@@ -1,0 +1,98 @@
+
+
+/* .player-token {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border: 1px solid #000;
+  border-radius: 50%;
+  cursor: pointer;
+} */
+.formation-container { 
+  position: relative;
+  width: 100%;
+  max-width: 1000px; /* Ancho del campo */
+  height: 500px; /* Altura del campo */
+  border: 1px solid #000;
+  background: url('../img/canchafutbol.jpg') no-repeat center;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.player-token {
+  width: 60px;  /* Fijar un tamaño constante para los jugadores */
+  height: 60px; /* Fijar un tamaño constante para los jugadores */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid #000;
+  box-sizing: border-box;
+}
+
+.player-token.filled {
+  background-color: #cce5ff;
+}
+
+.player-token.empty {
+  background-color: #fff;
+}
+
+.selected-position {
+  border: 2px solid #007bff;
+}
+
+.bench-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.bench-player {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border: 1px solid #000;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.selected-substitute {
+  border: 2px solid #007bff;
+}
+
+.info {
+  margin-top: 20px;
+}
+
+.remove-button-container {
+  margin-top: 20px;
+}
+
+.remove-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.remove-button:hover {
+  background-color: darkred;
+}
+
+.remove-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

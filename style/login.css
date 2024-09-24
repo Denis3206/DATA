@@ -1,0 +1,68 @@
+/* Asegúrate de que el body ocupe toda la pantalla */
+body {
+  /* margin: 0; */
+/*   padding: 0; */
+ /*  height: 100vh; */ /* Ocupa toda la altura de la ventana */
+ /*  display: flex; */
+  /* justify-content: center; */ /* Centra horizontalmente */
+  /* align-items: center; */ /* Centra verticalmente */
+/*   background: url('../img/fondoLogin.jpg') no-repeat center center fixed;*/  
+/*   background-size: cover; */
+/*   font-family: Arial, sans-serif; */
+  overflow-y: auto; /* Habilita el scroll vertical */
+}
+
+/* Estilos para el contenedor del formulario */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  width: 300px; /* Ajusta el tamaño del formulario */
+}
+
+.login-container h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-container form {
+  width: 100%; /* Asegura que el formulario ocupe todo el contenedor */
+}
+
+.login-container label {
+  display: block;
+  margin-bottom: 10px;
+  text-align: left; /* Alinea las etiquetas a la izquierda */
+}
+
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Asegura que el padding esté incluido dentro del ancho */
+}
+
+.login-container button {
+  width: 100%; /* Asegura que el botón ocupe todo el ancho del formulario */
+  padding: 10px;
+  background-color: #004d00;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 15px; /* Añade un margen superior para separarlo del input */
+}
+
+.login-container button:hover {
+  background-color: #003300;
+}

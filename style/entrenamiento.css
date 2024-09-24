@@ -1,0 +1,16 @@
+.training-container {
+    padding: 20px;
+    background: #f9f9f9;
+  }
+  
+  .training-container h2 {
+    color: #004d00;
+  }
+  
+  .training-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  

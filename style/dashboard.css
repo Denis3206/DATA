@@ -1,0 +1,71 @@
+.dashboard {
+  font-family: 'Roboto', sans-serif; /* Fuente más moderna y profesional */
+  background-color: #f4f4f4; /* Fondo claro para mejor contraste */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(135deg, #004d00, #008000); /* Degradado para darle dinamismo */
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 30px; /* Botones más redondeados */
+  background-color: #006600; 
+  transition: background-color 0.3s, transform 0.2s; /* Agregado de animación */
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Sombra en los botones */
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+nav a:hover {
+  background-color: #004d00;
+  transform: scale(1.05); /* Efecto de hover que agranda los botones ligeramente */
+}
+
+main {
+  padding: 40px; /* Más espacio para mayor claridad */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Diseño responsivo con cuadrícula */
+  gap: 30px;
+}
+
+section {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efecto de tarjeta para cada sección */
+  padding: 20px;
+  transition: transform 0.2s;
+}
+
+section:hover {
+  transform: translateY(-5px); /* Sutil elevación al hacer hover */
+}
+
+footer {
+  background-color: #004d00;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
