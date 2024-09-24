@@ -1,8 +1,5 @@
-# React + Vite
+# SISTEMA - DATA 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Descripción
+DATA es un sistema diseñado para ayudar a equipos a mejorar su organización y eficiencia. Proporciona herramientas intuitivas y atractivas que permiten a los usuarios gestionar tareas, proyectos y recursos de manera efectiva. Con DATA, los equipos pueden enfocarse en lo que realmente importa: lograr sus objetivos 🎯
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
