@@ -1,6 +1,6 @@
 {
   "name": "proyecto",
-  "homepage": "http:/Denis3206.github.io./Sistema---DATA",
+"homepage": "https://denis3206.github.io/Sistema---DATA",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy":"gh-pages -d build"
+  "deploy": "gh-pages -d dist"
 
   },
   "dependencies": {
