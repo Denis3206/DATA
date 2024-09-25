@@ -1,10 +1,6 @@
 {
   "name": "proyecto",
-<<<<<<< HEAD
   "homepage": "http:/Denis3206.github.io./Sistema---DATA",
-=======
-   "homepage": "http:/Denis3206.github.io./Sistema---DATA",
->>>>>>> 54b7ae516a33603af4f6ff6917b7d5634b67c066
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,11 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-<<<<<<< HEAD
-    "deploy": "gh-pages -d build"
-=======
     "deploy":"gh-pages -d build"
->>>>>>> 54b7ae516a33603af4f6ff6917b7d5634b67c066
+
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
