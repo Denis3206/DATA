@@ -1,4 +1,4 @@
-// Login.jsx
+/* // Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../style/login.css';
@@ -43,3 +43,4 @@ const Login = ({ onLogin }) => {
 };
 
 export default Login;
+ */

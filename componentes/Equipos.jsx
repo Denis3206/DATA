@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getStandingsInArgentinaLeague } from '../src/services/apifootball.js';
-
+import Navbar from './navbar.jsx';
 import '../style/equipos.css'
 
 const Team = () => {
@@ -10,12 +10,16 @@ const Team = () => {
   useEffect(() => {
     const fetchStandings = async () => {
       const data = await getStandingsInArgentinaLeague(2022); // Temporada 2022
-      if (data) {
-        setStandings(data[0].league.standings[0]); // Acceder a los datos de clasificación
+      console.log("Datos de la API:", data); // Agrega esto para depurar
+
+      // Verifica si la respuesta es válida
+      if (data && Array.isArray(data) && data.length > 0 && data[0].league && data[0].league.standings) {
+        const teams = data[0].league.standings[0];
+        setStandings(teams); // Establecer los datos de clasificación
         setFetchError(null);
-        console.log("Datos de la tabla de posiciones recibidos:", data);
       } else {
-        setFetchError("No se pudo obtener la tabla de posiciones");
+        setFetchError("Error en la estructura de datos de la API. Datos recibidos: " + JSON.stringify(data));
+        console.error("Error en la estructura de datos de la API:", data);
       }
     };
 
@@ -23,7 +27,9 @@ const Team = () => {
   }, []);
 
   return (
+    
     <div className="tabla-posiciones">
+      <Navbar></Navbar>
       <h1>Tabla de Posiciones - Liga Profesional Argentina (2022)</h1>
       {fetchError && <p>{fetchError}</p>}
       {standings.length > 0 ? (
@@ -47,8 +53,9 @@ const Team = () => {
                 <td>{index + 1}</td>
                 <td>
                 <img src={team.team.logo} alt={team.team.name} width="40" height="40" />
-                </td>
                 <td>{team.team.name}</td>
+                </td>
+                
                 <td>{team.points}</td>
                 <td>{team.all.played}</td>
                 <td>{team.all.win}</td>

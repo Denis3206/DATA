@@ -1,16 +1,120 @@
-.transfers-container {
-    padding: 20px;
-    background: #f5f5f5;
-  }
-  
-  .transfers-container h2 {
-    color: #004d00;
-  }
-  
-  .transfers-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
+.fichajes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.fichajes-table th, .fichajes-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.fichajes-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+/* Estilo para las imágenes de los jugadores */
+.fichajes-table img {
+  border-radius: 50%;
+}
+
+/* Estilo para las banderas */
+.flag {
+  width: 30px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+/* Estilo para los escudos de los equipos */
+.team-logo {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+.favorito {
+  cursor: pointer;
+  color: gray;
+}
+
+.favorito.active {
+  color: gold;
+}
+
+/* Estilos para los botones de sugerencia */
+.fichajes-table button {
+  padding: 5px 10px;
+  margin-right: 5px;
+  border: none;
+  background-color: #4CAF50; /* Color verde */
+  color: white; /* Texto blanco */
+  cursor: pointer;
+}
+
+.fichajes-table button:hover {
+  background-color: #45a049; /* Color verde más oscuro al pasar el mouse */
+}
+
+.fichajes-table button.reject {
+  background-color: #f44336; /* Color rojo para el botón de rechazar */
+}
+
+.fichajes-table button.reject:hover {
+  background-color: #e57373; /* Color rojo más claro al pasar el mouse */
+}
+
+.modal-sugerencias {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* Añadido para el posicionamiento relativo */
+}
+
+.close-modal {
+  position: absolute; /* Posiciona el botón de cerrar en la esquina */
+  right: 1px; /* Ajusta la distancia desde la derecha */
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-content ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.modal-content li {
+  margin-bottom: 10px;
+}
+
+.back-button {
+  background-color: #007bff; /* Color de fondo */
+  color: white; /* Color del texto */
+  border: none; /* Sin borde */
+  padding: 10px 15px; /* Relleno */
+  margin-bottom: 20px; /* Margen inferior */
+  cursor: pointer; /* Cursor de puntero */
+  display: flex; /* Para alinear el ícono */
+  align-items: center; /* Alinear verticalmente */
+}
+
+.back-button:hover {
+  background-color: #0056b3; /* Color de fondo al pasar el ratón */
+}
+
+.back-button svg {
+  margin-right: 5px; /* Espacio entre el ícono y el texto */
+}

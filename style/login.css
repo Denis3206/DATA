@@ -1,68 +1,71 @@
-/* Asegúrate de que el body ocupe toda la pantalla */
 body {
-  /* margin: 0; */
-/*   padding: 0; */
- /*  height: 100vh; */ /* Ocupa toda la altura de la ventana */
- /*  display: flex; */
-  /* justify-content: center; */ /* Centra horizontalmente */
-  /* align-items: center; */ /* Centra verticalmente */
-/*   background: url('../img/fondoLogin.jpg') no-repeat center center fixed;*/  
-/*   background-size: cover; */
-/*   font-family: Arial, sans-serif; */
-  overflow-y: auto; /* Habilita el scroll vertical */
+  margin: 0;
+  padding: 0;
+}
+.login-background {
+  height: 100vh; /* Altura completa de la ventana */
+  display: flex; /* Usa flexbox para centrar el formulario */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  background-image: url('../img/fondoLogin.jpg');
+  background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+  background-position: center; /* Centra la imagen */
+  margin: 0; /* Elimina márgenes */
+  padding: 0; /* Elimina relleno */
 }
 
-/* Estilos para el contenedor del formulario */
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
-  padding: 20px;
+/* Estilos del formulario */
+.login-form {
+  background: rgba(255, 255, 255, 0.9); /* Fondo blanco semitransparente para destacar el formulario */
+  padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  color: #fff;
-  width: 300px; /* Ajusta el tamaño del formulario */
-}
-
-.login-container h2 {
-  color: #fff;
-  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Sombra suave para el formulario */
   text-align: center;
-}
-
-.login-container form {
-  width: 100%; /* Asegura que el formulario ocupe todo el contenedor */
-}
-
-.login-container label {
-  display: block;
-  margin-bottom: 10px;
-  text-align: left; /* Alinea las etiquetas a la izquierda */
-}
-
-.login-container input {
   width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box; /* Asegura que el padding esté incluido dentro del ancho */
+  max-width: 400px; /* Ancho máximo del formulario */
 }
 
-.login-container button {
-  width: 100%; /* Asegura que el botón ocupe todo el ancho del formulario */
+h2 {
+  color: #333;
+  font-family: 'Arial', sans-serif;
+  margin-bottom: 20px;
+}
+
+.labelField {
+  font-size: 14px;
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+}
+.inputField {
+  width: 90%;
   padding: 10px;
-  background-color: #004d00;
-  color: #fff;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.loginButton {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 15px; /* Añade un margen superior para separarlo del input */
+  transition: background-color 0.3s ease;
 }
 
-.login-container button:hover {
-  background-color: #003300;
+.loginButton:hover {
+  background-color: #218838;
+}
+
+.loginButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
 }
