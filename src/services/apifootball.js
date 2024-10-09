@@ -84,11 +84,29 @@ export const getStandingsInArgentinaLeague = async (season = 2022) => {
   };
 
   export const fetchPlayers = async (teamId) => {
-  try {
-    const response = await apiFootball.get(`/players?team=${teamId}&season=2022`);
-    return response.data.response; // Asumiendo que los datos de jugadores vienen en response.data.response
-  } catch (error) {
-    console.error("Error fetching players", error);
-    throw error; // Lanzar el error para que pueda ser manejado donde se llama
-  }
-};
+    try {
+      const response = await fetch(`https://api.apifootball.com/v2/players?team_id=${teamId}&season=${season}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': '86380dbde2e27a014833a567ef568590' // Asegúrate de usar tu clave API aquí
+        }
+      });
+  
+      // Verifica el estado de la respuesta
+      if (!response.ok) {
+        const errorMessage = await response.text(); // Captura el mensaje de error
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorMessage}`);
+      }
+  
+      const data = await response.json();
+      return data.map(player => ({
+        id: player.player_id,
+        name: player.player_name,
+        team: player.team_id // Asegúrate de que esto coincida con tu estructura
+      }));
+    } catch (error) {
+      console.error("Error fetching players:", error);
+      throw error; // Lanza el error para manejarlo donde se llama a esta función
+    }
+  };

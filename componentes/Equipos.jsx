@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { getStandingsInArgentinaLeague } from '../src/services/apifootball.js';
 import Navbar from './navbar.jsx';
+import { FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import '../style/equipos.css'
+
 
 const Team = () => {
   const [standings, setStandings] = useState([]);
   const [fetchError, setFetchError] = useState(null);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) setUser(storedUser);
+
     const fetchStandings = async () => {
       const data = await getStandingsInArgentinaLeague(2022); // Temporada 2022
       console.log("Datos de la API:", data); // Agrega esto para depurar
@@ -27,9 +35,13 @@ const Team = () => {
   }, []);
 
   return (
-    
+    <div>
+    <Navbar user={user} />
+    <button className="back-button" onClick={() => navigate('/dashboard')}>
+        <FaArrowLeft /> Regresar al Dashboard
+      </button>
     <div className="tabla-posiciones">
-      <Navbar></Navbar>
+ 
       <h1>Tabla de Posiciones - Liga Profesional Argentina (2022)</h1>
       {fetchError && <p>{fetchError}</p>}
       {standings.length > 0 ? (
@@ -70,6 +82,7 @@ const Team = () => {
       ) : (
         <p>Cargando tabla de posiciones...</p>
       )}
+    </div>
     </div>
   );
 }

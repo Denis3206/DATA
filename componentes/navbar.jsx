@@ -31,7 +31,7 @@ const Navbar = ({ user }) => {
   return (
     <nav className="navbar">
     <div className="navbar-logo">
-    <img src="../img/LOGO.png" alt="Logo" className="logo-image" />
+    <img src="/img/LOGO.png" alt="Logo" className="logo-image" />
     </div>
     <div className="navbar-user-info">
     {user ? <p>Hola {user.nombre}</p> : <p>Cargando usuario...</p>}

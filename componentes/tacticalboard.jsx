@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react'; 
 import { fetchPlayers } from '../src/services/apifootball.js';
 import Formation from './formation.jsx';
+import Navbar from './navbar.jsx';
+import { FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import '../style/tacticalboard.css'
 
 const Tactics = () => {
+  const [user, setUser] = useState(null);
   const [formationTeam1, setFormationTeam1] = useState("4-5-1");
   const [formationTeam2, setFormationTeam2] = useState("4-4-2");
   
@@ -14,28 +18,42 @@ const Tactics = () => {
   const [substitutesTeam2, setSubstitutesTeam2] = useState([]);
 
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+
+  const navigate = useNavigate();
   
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) setUser(storedUser);
     const fetchAllPlayers = async () => {
-      const teamId1 = '458'; // Reemplaza con el ID del equipo 1
-      const teamId2 = '438'; // Reemplaza con el ID del equipo 2
-
+      const teamId1 = '458'; // ID del equipo 1
+      const teamId2 = '438'; // ID del equipo 2
+  
       try {
         const playersTeam1 = await fetchPlayers(teamId1);
         const playersTeam2 = await fetchPlayers(teamId2);
         
-        setSubstitutesTeam1(playersTeam1);
-        setSubstitutesTeam2(playersTeam2);
+        // Suponiendo que los jugadores se traen en el formato correcto
+        // Rellenar los jugadores en el campo principal o en el banco
+        setMainPlayersTeam1(playersTeam1.slice(0, 11)); // Primeros 11 jugadores para el campo
+        setSubstitutesTeam1(playersTeam1.slice(11)); // Restantes como suplentes
+        
+        setMainPlayersTeam2(playersTeam2.slice(0, 11)); // Primeros 11 jugadores para el campo
+        setSubstitutesTeam2(playersTeam2.slice(11)); // Restantes como suplentes
+  
       } catch (error) {
         console.error("Error fetching players", error);
       }
     };
-
+  
     fetchAllPlayers();
   }, []);
    
   return (
     <div>
+      <Navbar user={user} />
+      <button className="back-button" onClick={() => navigate('/dashboard')}>
+        <FaArrowLeft /> Regresar al Dashboard
+      </button>
     <h2>Pizarra Táctica</h2>
 
     <div className="two-formation-container">

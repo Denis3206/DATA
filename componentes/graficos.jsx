@@ -19,6 +19,34 @@ const Graficos = () => {
   const [showTeamStats, setShowTeamStats] = useState(true); // Estado para controlar qué estadísticas mostrar
   const navigate = useNavigate();
 
+  const insertPlayersIntoDatabase = async (players) => {
+    try {
+      // Mapea los datos de los jugadores a la estructura que necesitas
+      const playerData = players.map((player) => ({
+        name: player.player.name,
+        position: player.statistics[0].games.position,
+        age: player.player.age,
+        appearances: player.statistics[0].games.appearences,
+        goals: player.statistics[0].goals.total,
+        assists: player.statistics[0].goals.assists,
+        yellow_cards: player.statistics[0].cards.yellow,
+        red_cards: player.statistics[0].cards.red,
+      }));
+
+      // Inserta los datos en la tabla 'players'
+      const { data, error } = await supabase.from('players').insert(playerData);
+
+      if (error) {
+        throw error;
+      }
+      console.log('Jugadores insertados:', data);
+    } catch (error) {
+      console.error('Error al insertar jugadores:', error);
+    }
+  };
+
+
+
   useEffect(() => {
     const storedRole = localStorage.getItem('userRole');
     setRole(storedRole);
@@ -29,6 +57,7 @@ const Graficos = () => {
       const teamPlayers = await getTeamPlayers();
       setTeamStats(stats);
       setPlayers(teamPlayers);
+      await insertPlayersIntoDatabase(teamPlayers);
       setLoading(false);
     };
 
