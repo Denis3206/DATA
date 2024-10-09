@@ -1,54 +1,5 @@
-
-// App.jsx
-/* import React, { useState } from 'react';
-import { Routes, Route } from "react-router-dom";
-import { Supabase } from './config/client.js';
-
-import Login from '../componentes/realLogin';
-import Dashboard from '../componentes/dashboard';
-import Training from '../componentes/entrenamiento';
-import Tactics from '../componentes/tacticalboard';
-import Team from '../componentes/Equipos';
-import Transfers from '../componentes/fichajes';
-import Inicio from '../componentes/login.jsx';
-import './App.css';
-
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-
-  const handleLogin = (username, password) => {
-    if (username === 'admin' && password === 'password') {
-      setIsAuthenticated(true);
-      setUser({ name: 'Admin' });
-    } else {
-      alert('Credenciales incorrectas');
-    }
-  };
-
-  return (
-  
-      <Routes>
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route
-          path="/dashboard"
-          element={isAuthenticated ? <Dashboard user={user} /> : <Navigate to="/login" />}
-        >
-          <Route path="training" element={<Training />} />
-          <Route path="tactics" element={<Tactics />} />
-          <Route path="team" element={<Team />} />
-          <Route path="transfers" element={<Transfers />} />
-        </Route>
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
-   
-  );
-};
-
-export default App; */
 import React, { useState } from 'react';
 import Login from '../componentes/login';
-import AdminPanel from '../vistas/admin';
 import Dashboard from '../componentes/dashboard';
 import Team from '../componentes/Equipos';
 import { Routes, Route } from 'react-router-dom';
@@ -57,6 +8,7 @@ import Tactics from '../componentes/tacticalboard';
 import Transfers from '../componentes/fichajes';
 import Graficos from '../componentes/graficos';
 import Usuario from '../componentes/usuarios';
+import Notificaciones from '../componentes/notificacion';
 
 
 const App = () => {
@@ -71,6 +23,8 @@ const App = () => {
      <Route path="/fichajes" element={<Transfers role={userRole}/>} />
      <Route path="/graficos" element={<Graficos/>}/>
      <Route path="/usuarios" element={<Usuario/>} />
+     <Route path="/notificacion" element={<Notificaciones/>} />
+
      
     </Routes>
   );

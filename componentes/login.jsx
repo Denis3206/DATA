@@ -18,8 +18,8 @@ const Login = () => {
     try {
       // Traer todos los usuarios desde la tabla
       const { data: users, error: fetchError } = await supabase
-      .from('users')
-      .select('email, password, nombre, role');
+        .from('users')
+        .select('id_users, email, password, nombre, role');
   
       if (fetchError) {
         console.error('Error al buscar usuarios:', fetchError);
@@ -41,17 +41,31 @@ const Login = () => {
       if (password === user.password) {
         console.log('Inicio de sesión exitoso');
   
-        // Verificar el rol y redirigir
-         localStorage.setItem('userRole', user.role);
-         const userData = { name: user.nombre, role: user.role };
-         localStorage.setItem('user', JSON.stringify(userData));
-
-        // Redirige al dashboard
+        // Guardar todos los datos del usuario en localStorage (incluyendo nombre)
+        localStorage.setItem('user', JSON.stringify({
+          id_users: user.id_users,
+          nombre: user.nombre,
+          role: user.role
+        }));
+  
+        // Insertar notificación de inicio de sesión
+        await supabase.from('notificaciones').insert({
+          event_type: 'login',
+          mensaje: `El usuario ${user.nombre} ha iniciado sesión.`,
+          id_users: user.id_users,
+          created_at: new Date(),
+        });
+  
+        console.log('Nombre del usuario (entrenador):', user.nombre);
+  
+        // Guardar el rol en localStorage
+        localStorage.setItem('userRole', user.role);
+  
+        // Redirigir al dashboard
         navigate('/dashboard');
       } else {
         setError('Contraseña incorrecta');
       }
-  
     } catch (error) {
       console.error('Error durante el proceso de login:', error);
       setError('Error inesperado');

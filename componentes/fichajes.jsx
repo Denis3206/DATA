@@ -15,10 +15,13 @@ const Transfers = () => {
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const navigate = useNavigate();
 
+  
+
   useEffect(() => {
     const storedRole = localStorage.getItem('userRole');
     setRole(storedRole);
     const storedUser = JSON.parse(localStorage.getItem('user'));
+     console.log('Usuario almacenado:', storedUser);
     setUser(storedUser);
     const fetchJugadores = async () => {
       try {
@@ -34,6 +37,7 @@ const Transfers = () => {
 
     fetchJugadores();
   }, []);
+  
 
   const fetchFavoritos = async () => {
     // Consulta los jugadores favoritos desde la base de datos
@@ -48,14 +52,20 @@ const Transfers = () => {
 
   const manejarFavorito = async (jugador) => {
     const isFavorito = favoritos.some((fav) => fav.player_id === jugador.player.id);
-
+  
     if (isFavorito) {
       // Si ya está en favoritos, eliminarlo de la base de datos
       const { error } = await supabase
         .from('favoritos_jugadores')
         .delete()
         .eq('player_id', jugador.player.id);
-
+        await supabase.from('notificaciones').insert({
+          event_type: 'favorito',
+          mensaje: `El entrenador ${user.nombre} ha eliminado a ${jugador.player.name} de favoritos.`,
+          id_users: user.id_users,
+          created_at: new Date(),
+        });
+  
       if (!error) {
         setFavoritos(favoritos.filter((fav) => fav.player_id !== jugador.player.id));
       }
@@ -71,7 +81,7 @@ const Transfers = () => {
           photo: jugador.player.photo,
           position: jugador.statistics[0].games.position,
         });
-
+  
       if (!error) {
         setFavoritos([
           ...favoritos,
@@ -84,9 +94,17 @@ const Transfers = () => {
             position: jugador.statistics[0].games.position,
           },
         ]);
+  
+        await supabase.from('notificaciones').insert({
+          event_type: 'favorito',
+          mensaje: `El entrenador ${user.nombre} ha agregado a ${jugador.player.name} a favoritos.`,
+          id_users: user.id_users, // Ajusta según tu implementación
+          created_at: new Date(),
+        });
       }
     }
   };
+  
 
   // Función para aceptar/rechazar sugerencia (solo para administradores)
   const manejarSugerencia = (jugador, accion) => {

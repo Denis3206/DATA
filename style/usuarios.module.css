@@ -1,0 +1,110 @@
+.flexContainer {
+    display: flex;
+    flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+    align-items: center; /* Centra los elementos */
+    padding: 20px; /* Espacio alrededor del contenedor principal */
+    background: linear-gradient(135deg, #e0f7fa, #b2ebf2); /* Fondo en gradiente */
+    border-radius: 8px; /* Bordes redondeados */
+    font-family: 'Roboto', sans-serif; /* Usar fuente Roboto */
+}
+
+.formContainer, .modifyContainer {
+    flex: 1; /* Permite que los contenedores ocupen espacio proporcionalmente */
+    margin-bottom: 20px; /* Espacio debajo de cada contenedor */
+    padding: 20px; /* Espacio interno para el contenedor */
+    border: 2px solid #4caf50; /* Borde verde */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra más prominente */
+    width: 300px; /* Ancho fijo para que no estén estirados */
+    background-color: #ffffff; /* Fondo blanco para contraste */
+    display: flex; /* Usar flexbox para alinear elementos dentro */
+    flex-direction: column; /* Apilar inputs verticalmente */
+    align-items: center; /* Centrar los elementos */
+}
+
+.containerRow {
+    display: flex; /* Usar flexbox para alinear los contenedores */
+    gap: 20px; /* Espacio entre los contenedores */
+    width: 100%; /* Asegura que ocupen el ancho completo */
+}
+
+.userSection {
+    width: 100%; /* Asegura que la tabla ocupe el ancho completo */
+    margin-top: 20px; /* Espacio arriba de la sección de usuarios */
+}
+
+.title, .modifyTitle {
+    font-family: 'Roboto', sans-serif; /* Usar fuente Roboto para títulos */
+    color: #3e2723; /* Color marrón oscuro */
+    text-align: center; /* Centra el texto */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse; /* Colapsa los bordes de la tabla */
+    background-color: #fafafa; /* Fondo gris claro */
+}
+
+.tableHeader {
+    background-color: #4caf50; /* Fondo verde para el encabezado */
+    color: white; /* Texto blanco */
+    font-weight: bold; /* Texto en negrita */
+    text-align: left; /* Alineación izquierda */
+}
+
+.tableHeaderCell, .tableCell {
+    padding: 12px 16px; /* Espaciado en celdas */
+    border-bottom: 1px solid #ccc; /* Línea divisoria en celdas */
+}
+
+.tableRow {
+    transition: background-color 0.3s; /* Transición suave para el fondo */
+}
+
+.tableRow:hover {
+    background-color: #c8e6c9; /* Color de fondo claro al pasar el ratón */
+    cursor: pointer; /* Cambia el cursor al pasar sobre la fila */
+}
+
+.selectedRow {
+    background-color: #a5d6a7; /* Color de fondo para fila seleccionada */
+}
+
+.buttonContainer {
+    display: flex; /* Usar flexbox para alinear los botones */
+    gap: 10px; /* Espacio entre los botones */
+}
+
+.button {
+    flex: 1; /* Cada botón ocupa el mismo ancho */
+    padding: 10px; /* Espacio interno */
+    background-color: #4caf50; /* Color de fondo verde */
+    color: white; /* Color de texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    font-family: 'Roboto', sans-serif; /* Usar fuente Roboto para botones */
+    cursor: pointer; /* Cambia el cursor al pasar */
+    margin-bottom: 10px; /* Espacio debajo de cada botón */
+    transition: background-color 0.3s; /* Transición suave */
+}
+
+.button:hover {
+    background-color: #45a049; /* Color más oscuro al pasar el ratón */
+}
+
+.button:disabled {
+    background-color: #ccc; /* Color gris para botones desactivados */
+    cursor: not-allowed; /* Cursor que indica que no está permitido */
+}
+
+.input, .select {
+    width: calc(100% - 40px); /* Ocupa todo el ancho menos el padding (20px a cada lado) */
+    padding: 10px; /* Espacio interno */
+    margin-bottom: 10px; /* Espacio debajo de cada input */
+    border: 2px solid #4caf50; /* Borde verde */
+    border-radius: 4px; /* Bordes redondeados */
+    font-size: 14px; /* Tamaño de fuente */
+    font-family: 'Roboto', sans-serif; /* Usar fuente Roboto para inputs */
+    box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+}

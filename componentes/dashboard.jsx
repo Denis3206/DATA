@@ -34,7 +34,7 @@ const Dashboard = () => {
           <h3>Fichajes</h3>
           <p>Gestiona los fichajes de los jugadores.</p>
         </div>
-        <div className="card" onCnpm install react-iconslick={() => navigate('/notificaciones')} role="button" aria-label="Notificaciones">
+        <div className="card" onClick={() => navigate('/notificacion')} role="button" aria-label="Notificaciones">
           <FaRegBell size={40} />
           <h3>Notificaciones</h3>
           <p>Revisa las notificaciones importantes.</p>
@@ -78,7 +78,7 @@ const Dashboard = () => {
           <h3>Fichajes</h3>
           <p>Revisa las opciones de fichajes.</p>
         </div>
-        <div className="card" onClick={() => navigate('/notificaciones')} role="button" aria-label="Notificaciones">
+        <div className="card" onClick={() => navigate('/notificacion')} role="button" aria-label="Notificaciones">
           <FaRegBell size={40} />
           <h3>Notificaciones</h3>
           <p>Revisa las notificaciones importantes.</p>
