@@ -28,18 +28,20 @@ const Navbar = ({ user }) => {
       console.error('Error al cerrar sesión:', error);
     }
   };
+
   return (
     <nav className="navbar">
-    <div className="navbar-logo">
-    <img src="/img/LOGO.png" alt="Logo" className="logo-image" />
-    </div>
-    <div className="navbar-user-info">
-    {user ? <p>Hola {user.nombre}</p> : <p>Cargando usuario...</p>}
-    </div>
-    <div className="navbar-actions">
-      <button onClick={handleLogout} className="logout-btn">Cerrar Sesión</button>
-    </div>
-  </nav>
+      <div className="navbar-logo">
+        {/* Cambia la ruta de la imagen a LOGO.svg */}
+        <img src="/img/LOGO.svg" alt="Logo" className="logo-image" />
+      </div>
+      <div className="navbar-user-info">
+        {user ? <p>Hola {user.nombre}</p> : <p>Cargando usuario...</p>}
+      </div>
+      <div className="navbar-actions">
+        <button onClick={handleLogout} className="logout-btn">Cerrar Sesión</button>
+      </div>
+    </nav>
   );
 };
 
