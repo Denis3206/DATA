@@ -1,16 +1,159 @@
-.training-container {
-    padding: 20px;
-    background: #f9f9f9;
-  }
-  
-  .training-container h2 {
-    color: #004d00;
-  }
-  
-  .training-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
+/* Estilo general para el contenedor del componente */
+.entrenamiento-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor para la sección de jugadores y asignaciones */
+.jugadores-y-asignacion {
+  display: flex; /* Usar flexbox para alinear elementos */
+  justify-content: space-between; /* Espaciado entre los elementos */
+}
+
+/* Estilo para el contenedor de jugadores */
+.jugadores-container {
+  flex: 1; /* Ocupar todo el espacio disponible */
+  margin-right: 20px; /* Espacio a la derecha */
+}
+
+/* Estilo para el contenedor de asignaciones */
+.asignacion-container {
+  flex: 2; /* Ocupar más espacio que la lista de jugadores */
+}
+
+/* Estilo para las tablas */
+.jugadores-table, .entrenamientos-table, .comidas-table, .rutina-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.jugadores-table th, .entrenamientos-table th, .comidas-table th, .rutina-table th {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+}
+
+.jugadores-table td, .entrenamientos-table td, .comidas-table td, .rutina-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: calc(100% - 10px);
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.submit-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.select-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.rutinas-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 16px;
+  text-align: left;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rutinas-table th, .rutinas-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.rutinas-table th {
+  background-color: #28a745; /* Color azul deportivo */
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rutinas-table tr:hover {
+  background-color: #e9f5ff; /* Efecto hover en las filas */
+}
+
+.rutinas-table tr:last-child td {
+  border-bottom: none;
+}
+
+.rutinas-table td {
+  color: #333;
+}
+
+.rutinas-table td:first-child {
+  font-weight: bold;
+}
+
+.confirm-button {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-button:hover {
+  background-color: #218838;
+}
+
+.confirmed {
+  font-weight: bold;
+  color: #28a745;
+}
+
+.assigned-training-title {
+  font-size: 24px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.submit-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #28a745;
+}

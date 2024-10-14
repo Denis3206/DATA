@@ -56,7 +56,7 @@ const Login = () => {
           created_at: new Date(),
         });
   
-        console.log('Nombre del usuario (entrenador):', user.nombre);
+        console.log('Nombre del usuario:', user.nombre);
   
         // Guardar el rol en localStorage
         localStorage.setItem('userRole', user.role);

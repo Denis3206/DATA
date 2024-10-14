@@ -97,7 +97,7 @@ const Dashboard = () => {
           <h3>Equipos</h3>
           <p>Consulta la información de los equipos.</p>
         </div>
-        <div className="card" onClick={() => navigate('/estado-entrenamientos')} role="button" aria-label="Estado Entrenamientos">
+        <div className="card" onClick={() => navigate('/entrenamiento')} role="button" aria-label="Estado Entrenamientos">
           <FaClipboard size={40} />
           <h3>Estado Entrenamientos</h3>
           <p>Revisa el estado de los entrenamientos.</p>

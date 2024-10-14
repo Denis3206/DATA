@@ -33,7 +33,7 @@ const Navbar = ({ user }) => {
     <nav className="navbar">
       <div className="navbar-logo">
         {/* Cambia la ruta de la imagen a LOGO.svg */}
-        <img src="/img/LOGO.svg" alt="Logo" className="logo-image" />
+        <img src="../img/LOGO.svg" alt="Logo" className="logo-image" />
       </div>
       <div className="navbar-user-info">
         {user ? <p>Hola {user.nombre}</p> : <p>Cargando usuario...</p>}

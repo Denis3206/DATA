@@ -19,45 +19,32 @@ const Graficos = () => {
   const [showTeamStats, setShowTeamStats] = useState(true); // Estado para controlar qué estadísticas mostrar
   const navigate = useNavigate();
 
-  const insertPlayersIntoDatabase = async (players) => {
+  const fetchPlayersFromDatabase = async () => {
     try {
-      // Mapea los datos de los jugadores a la estructura que necesitas
-      const playerData = players.map((player) => ({
-        name: player.player.name,
-        position: player.statistics[0].games.position,
-        age: player.player.age,
-        appearances: player.statistics[0].games.appearences,
-        goals: player.statistics[0].goals.total,
-        assists: player.statistics[0].goals.assists,
-        yellow_cards: player.statistics[0].cards.yellow,
-        red_cards: player.statistics[0].cards.red,
-      }));
-
-      // Inserta los datos en la tabla 'players'
-      const { data, error } = await supabase.from('players').insert(playerData);
+      const { data: players, error } = await supabase
+        .from('miequipo')
+        .select('*'); // Trae todas las columnas de la tabla 'players'
 
       if (error) {
         throw error;
       }
-      console.log('Jugadores insertados:', data);
+      setPlayers(players);
+      console.log('Jugadores obtenidos de la base de datos:', players);
     } catch (error) {
-      console.error('Error al insertar jugadores:', error);
+      console.error('Error al obtener jugadores de la base de datos:', error);
     }
   };
-
-
 
   useEffect(() => {
     const storedRole = localStorage.getItem('userRole');
     setRole(storedRole);
     const storedUser = JSON.parse(localStorage.getItem('user'));
     setUser(storedUser);
+
     const fetchData = async () => {
       const stats = await getTeamStats();
-      const teamPlayers = await getTeamPlayers();
       setTeamStats(stats);
-      setPlayers(teamPlayers);
-      await insertPlayersIntoDatabase(teamPlayers);
+      await fetchPlayersFromDatabase(); // Llama a la función para obtener jugadores desde la base de datos
       setLoading(false);
     };
 
@@ -198,16 +185,16 @@ const Graficos = () => {
               </tr>
             </thead>
             <tbody>
-              {players.map((playerData) => (
-                <tr key={playerData.player.id}>
-                  <td>{playerData.player.name}</td>
-                  <td>{playerData.statistics[0].games.position}</td>
-                  <td>{playerData.player.age}</td>
-                  <td>{playerData.statistics[0].games.appearences}</td>
-                  <td>{playerData.statistics[0].goals.total}</td>
-                  <td>{playerData.statistics[0].goals.assists}</td>
-                  <td>{playerData.statistics[0].cards.yellow}</td>
-                  <td>{playerData.statistics[0].cards.red}</td>
+              {players.map((player) => (
+                <tr key={player.id_mijugador}>
+                  <td>{player.name}</td>
+                  <td>{player.position}</td>
+                  <td>{player.age}</td>
+                  <td>{player.appearances}</td>
+                  <td>{player.goals}</td>
+                  <td>{player.assists}</td>
+                  <td>{player.yellow_cards}</td>
+                  <td>{player.red_cards}</td>
                 </tr>
               ))}
             </tbody>

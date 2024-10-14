@@ -9,6 +9,7 @@ import Transfers from '../componentes/fichajes';
 import Graficos from '../componentes/graficos';
 import Usuario from '../componentes/usuarios';
 import Notificaciones from '../componentes/notificacion';
+import Entrenamiento from '../componentes/entrenamiento';
 
 
 const App = () => {
@@ -24,7 +25,8 @@ const App = () => {
      <Route path="/graficos" element={<Graficos/>}/>
      <Route path="/usuarios" element={<Usuario/>} />
      <Route path="/notificacion" element={<Notificaciones/>} />
-
+     <Route path="/entrenamiento" element={<Entrenamiento/>} />
+      
      
     </Routes>
   );
