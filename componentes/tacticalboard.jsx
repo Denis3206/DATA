@@ -8,7 +8,8 @@ import '../style/tacticalboard.css'
 const Tactics = () => {
   const [user, setUser] = useState(null);
   const [teams, setTeams] = useState([]);
-  const [selectedTeam, setSelectedTeam] = useState('');
+  const [selectedTeam1, setSelectedTeam1] = useState('');
+  const [selectedTeam2, setSelectedTeam2] = useState('');
   const [substitutesTeam1, setSubstitutesTeam1] = useState([]);
   const [formationTeam1, setFormationTeam1] = useState("4-5-1");
   const [formationTeam2, setFormationTeam2] = useState("4-4-2");
@@ -31,7 +32,7 @@ const Tactics = () => {
     const fetchTeams = async () => {
       const response = await fetch('https://v3.football.api-sports.io/teams?league=128&season=2022', {
         headers: {
-          'x-apisports-key': 'TU_API_KEY_AQUI',  // Coloca aquí tu API key
+          'x-apisports-key': '86380dbde2e27a014833a567ef568590',  // Coloca aquí tu API key
         },
       });
       const data = await response.json();
@@ -42,25 +43,35 @@ const Tactics = () => {
   }, []);
 
   // Obtener jugadores del equipo seleccionado
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      if (!selectedTeam) return;
-      const response = await fetch(`https://v3.football.api-sports.io/players?team=${selectedTeam}&season=2022`, {
-        headers: {
-          'x-apisports-key': 'TU_API_KEY_AQUI',  // Coloca aquí tu API key
-        },
-      });
-      const data = await response.json();
-      setSubstitutesTeam1(data.response.map(player => ({
-        id: player.player.id,
-        name: player.player.name,
-        photo: player.player.photo,
-        team: 'team1'
-      })));
-    };
+  const fetchPlayersForTeam = async (teamId, setSubstitutes) => {
+    if (!teamId) return;
+    const response = await fetch(`https://v3.football.api-sports.io/players?team=${teamId}&season=2022`, {
+      headers: {
+        'x-apisports-key': '86380dbde2e27a014833a567ef568590',  // Coloca aquí tu API key
+      },
+    });
+    const data = await response.json();
+    setSubstitutes(data.response.map(player => ({
+      id: player.player.id,
+      name: player.player.name,
+      photo: player.player.photo,
+      team: 'team1'  // Esto podría ajustarse según sea necesario
+    })));
+  };
 
-    fetchPlayers();
-  }, [selectedTeam]);
+  // Manejar selección de equipo para el equipo 1
+  const handleTeam1Selection = (e) => {
+    const teamId = e.target.value;
+    setSelectedTeam1(teamId);
+    fetchPlayersForTeam(teamId, setSubstitutesTeam1);
+  };
+
+  // Manejar selección de equipo para el equipo 2
+  const handleTeam2Selection = (e) => {
+    const teamId = e.target.value;
+    setSelectedTeam2(teamId);
+    fetchPlayersForTeam(teamId, setSubstitutesTeam2);
+  };
 
   // Mover jugador de la banca al campo o viceversa
   const handlePlayerMove = (player, team) => {
@@ -101,6 +112,38 @@ const Tactics = () => {
       </button>
       <h2>Pizarra Táctica</h2>
 
+      <div className="team-selection-container">
+        {/* Selección de equipo para el Equipo 1 */}
+        <div>
+          <label htmlFor="team1-select">Seleccionar Equipo 1:</label>
+          <select 
+            id="team1-select" 
+            value={selectedTeam1}
+            onChange={handleTeam1Selection}
+          >
+            <option value="">Seleccionar equipo</option>
+            {teams.map(team => (
+              <option key={team.id} value={team.id}>{team.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Selección de equipo para el Equipo 2 */}
+        <div>
+          <label htmlFor="team2-select">Seleccionar Equipo 2:</label>
+          <select 
+            id="team2-select" 
+            value={selectedTeam2}
+            onChange={handleTeam2Selection}
+          >
+            <option value="">Seleccionar equipo</option>
+            {teams.map(team => (
+              <option key={team.id} value={team.id}>{team.name}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <div className="two-formation-container">
         {/* Selección de formación para el Equipo 1 */}
         <div>
@@ -124,7 +167,7 @@ const Tactics = () => {
              onSelectPlayer={setSelectedPlayer}
              selectedPlayer={selectedPlayer}
              setSelectedPlayer={setSelectedPlayer}
-             onPlayerMove={handlePlayerMove} // Nuevo prop para manejar los movimientos
+             onPlayerMove={handlePlayerMove}
           />
         </div>
 
@@ -156,13 +199,13 @@ const Tactics = () => {
       </div>
 
       {/* Mostrar jugadores en la banca */}
-      <div>
+      {/* <div>
         <h3>Banca Equipo 1</h3>
         <div className="bench">
           {substitutesTeam1.length > 0 ? (
             substitutesTeam1.map(player => (
               <div key={player.id} className="player-token" onClick={() => handlePlayerMove(player, 'team1')}>
-                <img src={player.photo} alt={player.name} className="player-photo" />
+                <img src={player.photo} alt={player.name} />
                 <p>{player.name}</p>
               </div>
             ))
@@ -170,15 +213,13 @@ const Tactics = () => {
             <p>No hay jugadores en la banca</p>
           )}
         </div>
-      </div>
 
-      <div>
         <h3>Banca Equipo 2</h3>
         <div className="bench">
           {substitutesTeam2.length > 0 ? (
             substitutesTeam2.map(player => (
               <div key={player.id} className="player-token" onClick={() => handlePlayerMove(player, 'team2')}>
-                <img src={player.photo} alt={player.name} className="player-photo" />
+                <img src={player.photo} alt={player.name} />
                 <p>{player.name}</p>
               </div>
             ))
@@ -186,7 +227,7 @@ const Tactics = () => {
             <p>No hay jugadores en la banca</p>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

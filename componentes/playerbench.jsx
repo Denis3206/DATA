@@ -9,7 +9,15 @@ const PlayerBench = ({ players, onSelectPlayer, selectedPlayer }) => (
         onClick={() => onSelectPlayer(player)}
         className={`bench-player ${selectedPlayer && selectedPlayer.id === player.id ? 'selected' : ''}`}
       >
-        {player.name}
+        <img 
+          src={player.photo} 
+          alt={player.name} 
+          className="player-photo" 
+          style={{ width: '40px', height: '40px', borderRadius: '50%' }} 
+        />
+        <div className="player-name">
+          {player.name}
+        </div>
       </div>
     ))}
   </div>
