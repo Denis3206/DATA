@@ -152,18 +152,17 @@ const Formation = ({
   return (
     <div className="field-and-bench-container">
       <div className="formation-container">
-        {positions.map((pos, index) => (
-          <div
-            key={index}
-            onClick={() => handlePositionClick(index)}
-            className={`player-token ${mainPlayers[index] ? 'filled' : 'empty'} ${index === selectedPosition ? 'selected-position' : ''}`}
-            style={{ top: pos.top, left: pos.left }}
-          >
-            <PlayerToken player={mainPlayers[index]} />
-            <div>{pos.position}</div>
-           
-          </div>
-        ))}
+      {positions.map((pos, index) => (
+  <div
+    key={index}
+    onClick={() => handlePositionClick(index)}
+    className={`player-position ${mainPlayers[index] ? 'filled' : 'empty'} ${index === selectedPosition ? 'selected-position' : ''}`}
+    style={{ top: pos.top, left: pos.left, position: 'absolute' }}
+  >
+    {/* Pasar el jugador a PlayerToken */}
+    <PlayerToken player={mainPlayers[index]} />
+  </div>
+))}
       </div>
       <div className="remove-button-container">
         <button

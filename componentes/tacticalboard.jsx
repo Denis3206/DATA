@@ -51,11 +51,13 @@ const Tactics = () => {
       },
     });
     const data = await response.json();
+    const teamName = teams.find(team => team.id === teamId)?.name; // Obtener el nombre del equipo
+
     setSubstitutes(data.response.map(player => ({
       id: player.player.id,
       name: player.player.name,
       photo: player.player.photo,
-      team: 'team1'  // Esto podría ajustarse según sea necesario
+      team: teamName  // Usar el nombre del equipo en lugar de 'team1' o 'team2'
     })));
   };
 
@@ -74,35 +76,125 @@ const Tactics = () => {
   };
 
   // Mover jugador de la banca al campo o viceversa
-  const handlePlayerMove = (player, team) => {
-    if (team === 'team1') {
-      if (mainPlayersTeam1.find(p => p && p.id === player.id)) {
-        // Mover al banquillo
-        setMainPlayersTeam1(mainPlayersTeam1.map(p => p && p.id === player.id ? null : p));
-        setSubstitutesTeam1([...substitutesTeam1, player]);
-      } else {
-        // Mover al campo si hay un espacio vacío
-        const emptySpot = mainPlayersTeam1.findIndex(p => p === null);
-        if (emptySpot !== -1) {
-          setMainPlayersTeam1(mainPlayersTeam1.map((p, index) => index === emptySpot ? player : p));
-          setSubstitutesTeam1(substitutesTeam1.filter(p => p.id !== player.id));
-        }
-      }
-    } else if (team === 'team2') {
-      if (mainPlayersTeam2.find(p => p && p.id === player.id)) {
-        // Mover al banquillo
-        setMainPlayersTeam2(mainPlayersTeam2.map(p => p && p.id === player.id ? null : p));
-        setSubstitutesTeam2([...substitutesTeam2, player]);
-      } else {
-        // Mover al campo si hay un espacio vacío
-        const emptySpot = mainPlayersTeam2.findIndex(p => p === null);
-        if (emptySpot !== -1) {
-          setMainPlayersTeam2(mainPlayersTeam2.map((p, index) => index === emptySpot ? player : p));
-          setSubstitutesTeam2(substitutesTeam2.filter(p => p.id !== player.id));
-        }
-      }
+const handlePlayerMove = (player, team) => {
+    const currentTeam = team === selectedTeam1 ? selectedTeam1 : selectedTeam2; // Obtener el ID del equipo seleccionado
+
+    // Verificar si el jugador pertenece al equipo actual
+    if (player.team !== teams.find(t => t.id === currentTeam)?.name) {
+        alert("Este jugador no pertenece al equipo seleccionado");
+        return;
     }
-  };
+
+    if (team === selectedTeam1) {
+        if (mainPlayersTeam1.find(p => p && p.id === player.id)) {
+            // Mover al banquillo
+            setMainPlayersTeam1(mainPlayersTeam1.map(p => p && p.id === player.id ? null : p));
+            setSubstitutesTeam1([...substitutesTeam1, player]);
+        } else {
+            // Mover al campo si hay un espacio vacío
+            const emptySpot = mainPlayersTeam1.findIndex(p => p === null);
+            if (emptySpot !== -1) {
+                // Verificar que el jugador se mueve desde el banquillo del equipo 1
+                if (substitutesTeam1.find(p => p.id === player.id)) {
+                    setMainPlayersTeam1(mainPlayersTeam1.map((p, index) => index === emptySpot ? player : p));
+                    setSubstitutesTeam1(substitutesTeam1.filter(p => p.id !== player.id));
+                } else {
+                    alert("No puedes mover a este jugador desde el equipo contrario.");
+                }
+            }
+        }
+    } else if (team === selectedTeam2) {
+        if (mainPlayersTeam2.find(p => p && p.id === player.id)) {
+            // Mover al banquillo
+            setMainPlayersTeam2(mainPlayersTeam2.map(p => p && p.id === player.id ? null : p));
+            setSubstitutesTeam2([...substitutesTeam2, player]);
+        } else {
+            // Mover al campo si hay un espacio vacío
+            const emptySpot = mainPlayersTeam2.findIndex(p => p === null);
+            if (emptySpot !== -1) {
+                // Verificar que el jugador se mueve desde el banquillo del equipo 2
+                if (substitutesTeam2.find(p => p.id === player.id)) {
+                    setMainPlayersTeam2(mainPlayersTeam2.map((p, index) => index === emptySpot ? player : p));
+                    setSubstitutesTeam2(substitutesTeam2.filter(p => p.id !== player.id));
+                } else {
+                    alert("No puedes mover a este jugador desde el equipo contrario.");
+                }
+            }
+        }
+    }
+};
+
+const fetchPlayersWithStatsForTeam = async (teamId, setSubstitutes) => {
+  if (!teamId) return;
+  const response = await fetch(`https://v3.football.api-sports.io/players?team=${teamId}&season=2022`, {
+      headers: {
+          'x-apisports-key': '86380dbde2e27a014833a567ef568590',  // Coloca aquí tu API key
+      },
+  });
+  const data = await response.json();
+
+  const playersWithStats = await Promise.all(data.response.map(async (player) => {
+      // Obtener estadísticas del jugador
+      const statsResponse = await fetch(`https://v3.football.api-sports.io/players/statistics?player=${player.player.id}&season=2022`, {
+          headers: {
+              'x-apisports-key': '86380dbde2e27a014833a567ef568590',
+          },
+      });
+      const statsData = await statsResponse.json();
+      const stats = statsData.response[0]?.statistics || {};
+
+      return {
+          id: player.player.id,
+          name: player.player.name,
+          photo: player.player.photo,
+          goals: stats.goals?.total || 0,
+          assists: stats.goals?.assists || 0,
+          yellowCards: stats.cards?.yellow || 0,
+          redCards: stats.cards?.red || 0,
+          team: teams.find(t => t.id === teamId)?.name // Usar el nombre del equipo en lugar de 'team1' o 'team2'
+      };
+  }));
+
+  setSubstitutes(playersWithStats);
+};
+
+const [matchResult, setMatchResult] = useState(null);
+
+// Función para simular el partido
+const simulateMatch = () => {
+  if (mainPlayersTeam1.includes(null) || mainPlayersTeam2.includes(null)) {
+      alert("Ambos equipos deben tener 11 jugadores en el campo para simular el partido.");
+      return;
+  }
+
+  // Lógica para simular el partido
+  let scoreTeam1 = 0;
+  let scoreTeam2 = 0;
+
+  // Sumar goles de jugadores del primer equipo
+  mainPlayersTeam1.forEach(player => {
+      if (player && typeof player.goals === 'number') {
+          scoreTeam1 += player.goals;  // Asegúrate de que 'goals' es un número
+      }
+  });
+
+  // Sumar goles de jugadores del segundo equipo
+  mainPlayersTeam2.forEach(player => {
+      if (player && typeof player.goals === 'number') {
+          scoreTeam2 += player.goals;  // Asegúrate de que 'goals' es un número
+      }
+  });
+
+  // Obteniendo los nombres de los equipos de los jugadores
+  const team1Name = mainPlayersTeam1[0]?.team || "Equipo 1"; // Asigna un nombre por defecto si no existe
+  const team2Name = mainPlayersTeam2[0]?.team || "Equipo 2"; // Asigna un nombre por defecto si no existe
+
+  console.log(mainPlayersTeam1);
+console.log(mainPlayersTeam2);
+console.log(scoreTeam1, scoreTeam2);
+  // Mostrar el resultado del partido
+  setMatchResult(`Resultado: ${team1Name} ${scoreTeam1} - ${scoreTeam2} ${team2Name}`);
+};
 
   return (
     <div>
@@ -147,7 +239,7 @@ const Tactics = () => {
       <div className="two-formation-container">
         {/* Selección de formación para el Equipo 1 */}
         <div>
-          <h3>Equipo 1</h3>
+          <h3>{teams.find(t => t.id === selectedTeam1)?.name}</h3> {/* Mostrar el nombre del equipo 1 */}
           <select 
             value={formationTeam1}
             onChange={(e) => setFormationTeam1(e.target.value)}
@@ -159,7 +251,7 @@ const Tactics = () => {
           
           <Formation
              formation={formationTeam1}
-             team="team1"
+             team={teams.find(t => t.id === selectedTeam1)?.name} // Usar el nombre del equipo
              mainPlayers={mainPlayersTeam1}
              setMainPlayers={setMainPlayersTeam1}
              substitutes={substitutesTeam1}
@@ -173,7 +265,7 @@ const Tactics = () => {
 
         {/* Selección de formación para el Equipo 2 */}
         <div>
-          <h3>Equipo 2</h3>
+          <h3>{teams.find(t => t.id === selectedTeam2)?.name}</h3> {/* Mostrar el nombre del equipo 2 */}
           <select 
             value={formationTeam2}
             onChange={(e) => setFormationTeam2(e.target.value)}
@@ -185,7 +277,7 @@ const Tactics = () => {
 
           <Formation
              formation={formationTeam2}
-             team="team2"
+             team={teams.find(t => t.id === selectedTeam2)?.name} // Usar el nombre del equipo
              mainPlayers={mainPlayersTeam2}
              setMainPlayers={setMainPlayersTeam2}
              substitutes={substitutesTeam2}
@@ -197,37 +289,12 @@ const Tactics = () => {
           />
         </div>
       </div>
+      <button onClick={simulateMatch} disabled={mainPlayersTeam1.includes(null) || mainPlayersTeam2.includes(null)}>
+            Simular Partido
+        </button>
 
-      {/* Mostrar jugadores en la banca */}
-      {/* <div>
-        <h3>Banca Equipo 1</h3>
-        <div className="bench">
-          {substitutesTeam1.length > 0 ? (
-            substitutesTeam1.map(player => (
-              <div key={player.id} className="player-token" onClick={() => handlePlayerMove(player, 'team1')}>
-                <img src={player.photo} alt={player.name} />
-                <p>{player.name}</p>
-              </div>
-            ))
-          ) : (
-            <p>No hay jugadores en la banca</p>
-          )}
-        </div>
-
-        <h3>Banca Equipo 2</h3>
-        <div className="bench">
-          {substitutesTeam2.length > 0 ? (
-            substitutesTeam2.map(player => (
-              <div key={player.id} className="player-token" onClick={() => handlePlayerMove(player, 'team2')}>
-                <img src={player.photo} alt={player.name} />
-                <p>{player.name}</p>
-              </div>
-            ))
-          ) : (
-            <p>No hay jugadores en la banca</p>
-          )}
-        </div>
-      </div> */}
+        {/* Mostrar resultado del partido */}
+        {matchResult && <h3>{matchResult}</h3>}
     </div>
   );
 };

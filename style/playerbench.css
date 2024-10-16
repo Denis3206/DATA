@@ -19,9 +19,6 @@
   cursor: pointer;
   margin: 5px;
   border-radius: 50%;
-  border: 2px solid #000; /* Borde para la visibilidad */
-  flex-grow: 0; /* Los elementos no crecen */
-  flex-shrink: 0; /* Los elementos no se encogen */
 }
 
   .bench-player:hover {

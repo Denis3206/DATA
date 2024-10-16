@@ -1,5 +1,6 @@
 import React from 'react';
 import '../style/playerbench.css';
+import PlayerToken from './tokenplayer';
 
 const PlayerBench = ({ players, onSelectPlayer, selectedPlayer }) => (
   <div className="bench-container">
@@ -9,15 +10,7 @@ const PlayerBench = ({ players, onSelectPlayer, selectedPlayer }) => (
         onClick={() => onSelectPlayer(player)}
         className={`bench-player ${selectedPlayer && selectedPlayer.id === player.id ? 'selected' : ''}`}
       >
-        <img 
-          src={player.photo} 
-          alt={player.name} 
-          className="player-photo" 
-          style={{ width: '40px', height: '40px', borderRadius: '50%' }} 
-        />
-        <div className="player-name">
-          {player.name}
-        </div>
+        <PlayerToken player={player} />
       </div>
     ))}
   </div>
