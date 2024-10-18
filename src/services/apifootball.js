@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_KEY = '86380dbde2e27a014833a567ef568590';  // Reemplaza con tu clave API
+const API_KEY = '86380dbde2e27a014833a567ef568590';  // Reemplaza con tu clave API  denis: 86380dbde2e27a014833a567ef568590// pesesinho: 804bf79de2847d26c1d85c5bc9f1f731
 const BASE_URL = 'https://v3.football.api-sports.io';
 const ligaArgentinaId = 128; // ID de la liga argentina
 const season = 2022;

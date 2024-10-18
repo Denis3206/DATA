@@ -36,7 +36,8 @@ const formationMapping = {
 
 const Formation = ({ 
   formation, 
-  team, 
+  team, // El equipo actual al que pertenece esta formación (Field and Bench Container)
+  containerId,
   mainPlayers, 
   setMainPlayers, 
   substitutes, 
@@ -44,9 +45,7 @@ const Formation = ({
   selectedPlayer, 
   setSelectedPlayer 
 }) => {
-  const [selectedPosition, setSelectedPosition] = useState(null);
 
-  const positions = formationMapping[formation] || [];
 
   const handleRemoveClick = () => {
     if (selectedPosition !== null && mainPlayers[selectedPosition] !== null) {
@@ -65,22 +64,29 @@ const Formation = ({
     }
   };
 
+  const [selectedPosition, setSelectedPosition] = useState(null);
+
+  const positions = formationMapping[formation] || [];
+
   const handlePositionClick = (index) => {
+    const currentFieldPlayer = mainPlayers[index];
+
     if (selectedPlayer) {
-      if (selectedPlayer.team !== team) {
-        // Mostrar alerta si se intenta mover un jugador de otro equipo
-        alert("No puedes mover un jugador del otro equipo.");
+      // Verificar que el jugador seleccionado pertenece al mismo contenedor
+      if (currentFieldPlayer && currentFieldPlayer.containerId !== containerId) {
+        alert("No puedes mover jugadores de otro contenedor.");
         return;
       }
-      // Solo intercambiar si el jugador seleccionado es un suplente del mismo equipo
-      if (mainPlayers[index] === null) {
-        // Si la posición está vacía, asignamos el jugador seleccionado desde la banca
+
+      // Si la posición está vacía, asignamos el jugador seleccionado desde la banca
+      if (currentFieldPlayer === null) {
         const newMainPlayers = [...mainPlayers];
         newMainPlayers[index] = selectedPlayer;
 
         if (selectedPosition !== null) {
           newMainPlayers[selectedPosition] = null;
         }
+
         // Remover al jugador de la banca si venía de ahí
         const filteredSubstitutes = substitutes.filter(sub => sub.id !== selectedPlayer.id);
         setSubstitutes(filteredSubstitutes);
@@ -89,17 +95,8 @@ const Formation = ({
         setSelectedPlayer(null);
         setSelectedPosition(null);
       } else {
-        // Intercambiar entre jugadores del campo
-        const currentFieldPlayer = mainPlayers[index];
+        // Intercambio de jugadores del mismo contenedor en el campo
         const newMainPlayers = [...mainPlayers];
-        if (selectedPosition === null) {
-          const filteredSubstitutes = substitutes.filter(sub => sub.id !== selectedPlayer.id);
-          filteredSubstitutes.push(currentFieldPlayer); // El jugador del campo va a la banca
-          setSubstitutes(filteredSubstitutes);
-          newMainPlayers[index] = selectedPlayer;
-          setMainPlayers(newMainPlayers);
-        }
-
         newMainPlayers[selectedPosition] = currentFieldPlayer;
         newMainPlayers[index] = selectedPlayer;
 
@@ -107,44 +104,43 @@ const Formation = ({
         setSelectedPlayer(null);
         setSelectedPosition(null);
       }
-    } else if (mainPlayers[index] !== null) {
+    } else if (currentFieldPlayer) {
       // Seleccionar un jugador en el campo para moverlo
-      setSelectedPlayer(mainPlayers[index]);
+      setSelectedPlayer(currentFieldPlayer);
       setSelectedPosition(index);
     }
   };
 
   const handleSubstituteClick = (substitute) => {
-    if (selectedPlayer) {
-      if (substitute.team !== team) {
-        // Mostrar alerta si se intenta seleccionar un suplente de otro equipo
-        alert("No puedes seleccionar un suplente del otro equipo.");
-        return;
-      }
-
-      // Seleccionar un suplente del equipo
-      setSelectedPlayer(substitute);
-      setSelectedPosition(null);
-    } else {
-      // Seleccionar un suplente del equipo
-      setSelectedPlayer(substitute);
+    // Verificar que el suplente pertenece al mismo contenedor
+    console.log(substitute);
+    if (substitute.containerId !== containerId) {
+      alert("Solo puedes seleccionar suplentes del mismo contenedor.");
+      return;
     }
+
+    // Seleccionar un suplente del mismo contenedor
+    setSelectedPlayer(substitute);
+    setSelectedPosition(null);
   };
 
   const handleBenchClick = (index) => {
     if (selectedPlayer) {
-      if (mainPlayers[index] === null) {
-        // Si la posición en el campo está vacía, movemos el jugador a esa posición
-        const newMainPlayers = [...mainPlayers];
-        newMainPlayers[index] = selectedPlayer;
-
-        // Removemos al jugador de la banca si venía de ahí
-        const filteredSubstitutes = substitutes.filter(sub => sub.id !== selectedPlayer.id);
-        setSubstitutes(filteredSubstitutes);
-
-        setMainPlayers(newMainPlayers);
-        setSelectedPlayer(null);
+      // Verificar que el jugador pertenece al mismo contenedor
+      if (selectedPlayer.containerId !== containerId) {
+        alert("No puedes mover jugadores de otro contenedor.");
+        return;
       }
+
+      const newMainPlayers = [...mainPlayers];
+      newMainPlayers[index] = selectedPlayer;
+
+      // Remover de la banca si es necesario
+      const filteredSubstitutes = substitutes.filter(sub => sub.id !== selectedPlayer.id);
+      setSubstitutes(filteredSubstitutes);
+
+      setMainPlayers(newMainPlayers);
+      setSelectedPlayer(null);
     }
   };
   const isRemoveButtonEnabled = selectedPosition !== null && mainPlayers[selectedPosition] !== null;
@@ -152,17 +148,16 @@ const Formation = ({
   return (
     <div className="field-and-bench-container">
       <div className="formation-container">
-      {positions.map((pos, index) => (
-  <div
-    key={index}
-    onClick={() => handlePositionClick(index)}
-    className={`player-position ${mainPlayers[index] ? 'filled' : 'empty'} ${index === selectedPosition ? 'selected-position' : ''}`}
-    style={{ top: pos.top, left: pos.left, position: 'absolute' }}
-  >
-    {/* Pasar el jugador a PlayerToken */}
-    <PlayerToken player={mainPlayers[index]} />
-  </div>
-))}
+        {positions.map((pos, index) => (
+          <div
+            key={index}
+            onClick={() => handlePositionClick(index)}
+            className={`player-position ${mainPlayers[index] ? 'filled' : 'empty'} ${index === selectedPosition ? 'selected-position' : ''}`}
+            style={{ top: pos.top, left: pos.left, position: 'absolute' }}
+          >
+            <PlayerToken player={mainPlayers[index]} />
+          </div>
+        ))}
       </div>
       <div className="remove-button-container">
         <button
@@ -176,7 +171,7 @@ const Formation = ({
 
       <PlayerBench 
         players={substitutes} 
-        onSelectPlayer={handleSubstituteClick} // Pasar el manejador de clics
+        onSelectPlayer={handleSubstituteClick} 
         selectedPlayer={selectedPlayer} 
       />
 

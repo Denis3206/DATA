@@ -15,73 +15,68 @@ const Transfers = () => {
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const navigate = useNavigate();
 
-  
-
   useEffect(() => {
     const storedRole = localStorage.getItem('userRole');
     setRole(storedRole);
     const storedUser = JSON.parse(localStorage.getItem('user'));
-     console.log('Usuario almacenado:', storedUser);
     setUser(storedUser);
-    const fetchJugadores = async () => {
-      try {
-        const data = await getJugadores(); // Llamamos a la función que ya maneja el API
-        setJugadores(data); // Guardamos los jugadores en el estado
-        await fetchFavoritos();
-      } catch (error) {
-        console.error('Error al cargar los jugadores:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchJugadores();
+    if (storedRole === '1') {
+      // Si es administrador, solo cargamos jugadores favoritos desde la base de datos
+      fetchFavoritos();
+    } else if (storedRole === '2') {
+      // Si es entrenador, cargamos jugadores desde la API y favoritos
+      fetchJugadores();
+    }
   }, []);
-  
+
+  const fetchJugadores = async () => {
+    try {
+      const data = await getJugadores(); // Traer jugadores desde la API
+      setJugadores(data); // Guardamos jugadores en el estado
+      await fetchFavoritos(); // Cargar los favoritos del entrenador
+    } catch (error) {
+      console.error('Error al cargar los jugadores:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchFavoritos = async () => {
-    // Consulta los jugadores favoritos desde la base de datos
+    // Consulta jugadores favoritos desde la tabla favoritos_jugadores
     const { data, error } = await supabase.from('favoritos_jugadores').select('*');
-
     if (error) {
       console.error('Error al cargar los favoritos:', error);
     } else {
-      setFavoritos(data); // Guardar los favoritos en el estado
+      setFavoritos(data); // Guardar favoritos en el estado
     }
+    setLoading(false);
   };
 
   const manejarFavorito = async (jugador) => {
     const isFavorito = favoritos.some((fav) => fav.player_id === jugador.player.id);
-  
+
     if (isFavorito) {
-      // Si ya está en favoritos, eliminarlo de la base de datos
+      // Si ya está en favoritos, eliminarlo
       const { error } = await supabase
         .from('favoritos_jugadores')
         .delete()
         .eq('player_id', jugador.player.id);
-        await supabase.from('notificaciones').insert({
-          event_type: 'favorito',
-          mensaje: `El entrenador ${user.nombre} ha eliminado a ${jugador.player.name} de favoritos.`,
-          id_users: user.id_users,
-          created_at: new Date(),
-        });
-  
+
       if (!error) {
         setFavoritos(favoritos.filter((fav) => fav.player_id !== jugador.player.id));
       }
     } else {
-      // Si no está en favoritos, agregarlo a la base de datos
-      const { error } = await supabase
-        .from('favoritos_jugadores')
-        .insert({
-          player_id: jugador.player.id,
-          name: jugador.player.name,
-          team: jugador.statistics[0].team.name,
-          nationality: jugador.player.nationality,
-          photo: jugador.player.photo,
-          position: jugador.statistics[0].games.position,
-        });
-  
+      // Agregar jugador a favoritos
+      const { error } = await supabase.from('favoritos_jugadores').insert({
+        player_id: jugador.player.id,
+        name: jugador.player.name,
+        team: jugador.statistics[0].team.name,
+        nationality: jugador.player.nationality,
+        photo: jugador.player.photo,
+        position: jugador.statistics[0].games.position,
+      });
+
       if (!error) {
         setFavoritos([
           ...favoritos,
@@ -94,22 +89,13 @@ const Transfers = () => {
             position: jugador.statistics[0].games.position,
           },
         ]);
-  
-        await supabase.from('notificaciones').insert({
-          event_type: 'favorito',
-          mensaje: `El entrenador ${user.nombre} ha agregado a ${jugador.player.name} a favoritos.`,
-          id_users: user.id_users, // Ajusta según tu implementación
-          created_at: new Date(),
-        });
       }
     }
   };
-  
 
-  // Función para aceptar/rechazar sugerencia (solo para administradores)
   const manejarSugerencia = (jugador, accion) => {
     console.log(`${accion} sugerencia para el jugador:`, jugador);
-    // Lógica adicional para manejar la sugerencia según la acción
+    // Aquí se puede implementar la lógica para aceptar o rechazar las sugerencias
   };
 
   if (loading) {
@@ -124,13 +110,8 @@ const Transfers = () => {
         <FaArrowLeft /> Regresar al Dashboard
       </button>
 
-
-      <button onClick={() => setMostrarSugerencias(!mostrarSugerencias)}>
-        {mostrarSugerencias ? 'Ocultar Sugerencias' : 'Mostrar Sugerencias'}
-      </button>
       <h2>Lista de Jugadores</h2>
       <table className="fichajes-table">
-        {/* Aplicar clase para la tabla */}
         <thead>
           <tr>
             <th>Foto</th>
@@ -138,26 +119,53 @@ const Transfers = () => {
             <th>Posición</th>
             <th>Nacionalidad</th>
             <th>Equipo</th>
-            <th>Favoritos</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {jugadores.map((jugador) => (
-            <tr key={jugador.player.id}>
-              <td>
-                <img
-                  src={jugador.player.photo}
-                  alt={jugador.player.name}
-                  style={{ width: '50px', height: '50px' }} // Estilo inline para la imagen del jugador
-                />
-              </td>
-              <td>{jugador.player.name}</td>
-              <td>{jugador.statistics[0].games.position}</td>
-              <td>{jugador.player.nationality}</td>
-              <td>{jugador.statistics[0].team.name}</td>
-              <td>
-                {/* Estrella para marcar como favorito */}
-                {role == 2 ? (
+          {role == 1 ? (
+            // Si el usuario es administrador, mostrar jugadores favoritos
+            favoritos.length > 0 ? (
+              favoritos.map((jugador) => (
+                <tr key={jugador.player_id}>
+                  <td>
+                    <img
+                      src={jugador.photo}
+                      alt={jugador.name}
+                      style={{ width: '50px', height: '50px' }}
+                    />
+                  </td>
+                  <td>{jugador.name}</td>
+                  <td>{jugador.position}</td>
+                  <td>{jugador.nationality}</td>
+                  <td>{jugador.team}</td>
+                  <td>
+                    <button onClick={() => manejarSugerencia(jugador, 'Aceptar')}>Aceptar</button>
+                    <button onClick={() => manejarSugerencia(jugador, 'Rechazar')}>Rechazar</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No hay jugadores favoritos asignados.</td>
+              </tr>
+            )
+          ) : (
+            // Si es entrenador, mostrar jugadores de la API
+            jugadores.map((jugador) => (
+              <tr key={jugador.player.id}>
+                <td>
+                  <img
+                    src={jugador.player.photo}
+                    alt={jugador.player.name}
+                    style={{ width: '50px', height: '50px' }}
+                  />
+                </td>
+                <td>{jugador.player.name}</td>
+                <td>{jugador.statistics[0].games.position}</td>
+                <td>{jugador.player.nationality}</td>
+                <td>{jugador.statistics[0].team.name}</td>
+                <td>
                   <span
                     style={{
                       cursor: 'pointer',
@@ -169,42 +177,12 @@ const Transfers = () => {
                   >
                     ★
                   </span>
-                ) : (
-                  favoritos.some((fav) => fav.player_id === jugador.player.id) && (
-                    <>
-                      <button onClick={() => manejarSugerencia(jugador, 'Aceptar')}>Aceptar</button>
-                      <button onClick={() => manejarSugerencia(jugador, 'Rechazar')}>Rechazar</button>
-                    </>
-                  )
-                )}
-              </td>
-            </tr>
-          ))}
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
-
-      {/* Sección de sugerencias (jugadores marcados como favoritos) */}
-      {mostrarSugerencias && (
-        <div className="modal-sugerencias">
-          <div className="modal-content">
-            <h3>Sugerencias</h3>
-            <button className="close-modal" onClick={() => setMostrarSugerencias(false)}>
-              <FaArrowLeft /> {/* Icono de retroceso */}
-            </button>
-            <ul>
-              {favoritos.length > 0 ? (
-                favoritos.map((jugador) => (
-                  <li key={jugador.player_id}>
-                    {jugador.name} - {jugador.team}
-                  </li>
-                ))
-              ) : (
-                <p>No hay sugerencias.</p>
-              )}
-            </ul>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
