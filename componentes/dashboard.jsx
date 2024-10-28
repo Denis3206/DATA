@@ -102,7 +102,7 @@ const Dashboard = () => {
           <h3>Estado Entrenamientos</h3>
           <p>Revisa el estado de los entrenamientos.</p>
         </div>
-        <div className="card" onClick={() => navigate('/notificaciones')} role="button" aria-label="Notificaciones">
+        <div className="card" onClick={() => navigate('/notificacion')} role="button" aria-label="Notificaciones">
           <FaRegBell size={40} />
           <h3>Notificaciones</h3>
           <p>Revisa las notificaciones importantes.</p>

@@ -11,10 +11,13 @@ const Transfers = () => {
   const [user, setUser] = useState(null);
   const [jugadores, setJugadores] = useState([]);
   const [favoritos, setFavoritos] = useState([]);
+  const [miEquipo, setMiEquipo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const navigate = useNavigate();
 
+ 
+ 
   useEffect(() => {
     const storedRole = localStorage.getItem('userRole');
     setRole(storedRole);
@@ -29,11 +32,18 @@ const Transfers = () => {
       fetchJugadores();
     }
   }, []);
-
+  
   const fetchJugadores = async () => {
     try {
-      const data = await getJugadores(); // Traer jugadores desde la API
-      setJugadores(data); // Guardamos jugadores en el estado
+      await fetchMiEquipo(); // Primero traemos los jugadores de 'miequipo'
+      const data = await getJugadores(); // Luego traemos los jugadores desde la API
+  
+      // Filtrar jugadores de la API que ya están en 'miequipo'
+      const jugadoresFiltrados = data.filter(
+        jugador => !miEquipo.some(miJugador => miJugador.toLowerCase() === jugador.player.name.toLowerCase())
+      );
+  
+      setJugadores(jugadoresFiltrados); // Guardamos solo los que no están en 'miequipo'
       await fetchFavoritos(); // Cargar los favoritos del entrenador
     } catch (error) {
       console.error('Error al cargar los jugadores:', error);
@@ -41,6 +51,16 @@ const Transfers = () => {
       setLoading(false);
     }
   };
+
+  const fetchMiEquipo = async () => {
+    const { data, error } = await supabase.from('miequipo').select('name');
+    if (error) {
+      console.error('Error al cargar los jugadores del equipo:', error);
+    } else {
+      setMiEquipo(data.map(jugador => jugador.name)); // Almacenamos solo los IDs de los jugadores en miEquipo
+    }
+  };
+
 
   const fetchFavoritos = async () => {
     // Consulta jugadores favoritos desde la tabla favoritos_jugadores
@@ -51,7 +71,8 @@ const Transfers = () => {
       setFavoritos(data); // Guardar favoritos en el estado
     }
     setLoading(false);
-  };
+  }; 
+
 
   const manejarFavorito = async (jugador) => {
     const isFavorito = favoritos.some((fav) => fav.player_id === jugador.player.id);
@@ -75,6 +96,19 @@ const Transfers = () => {
         nationality: jugador.player.nationality,
         photo: jugador.player.photo,
         position: jugador.statistics[0].games.position,
+        age: jugador.player.age,
+        appearances: jugador.statistics[0].games.appearances,
+        goals: jugador.statistics[0].goals.total,
+        assists: jugador.statistics[0].goals.assists,
+        yellow_cards: jugador.statistics[0].cards.yellow,
+        red_cards: jugador.statistics[0].cards.red,
+        passes: jugador.statistics[0].passes.total,
+        passesAccuracy: jugador.statistics[0].passes.accuracy,
+        shots: jugador.statistics[0].shots.total,
+        shotsOnTarget: jugador.statistics[0].shots.on,
+        tackles: jugador.statistics[0].tackles.total,
+        duelsWon: jugador.statistics[0].duels.won
+
       });
 
       if (!error) {
@@ -87,17 +121,113 @@ const Transfers = () => {
             nationality: jugador.player.nationality,
             photo: jugador.player.photo,
             position: jugador.statistics[0].games.position,
+            age: jugador.player.age,
+            appearances: jugador.statistics[0].games.appearances,
+            goals: jugador.statistics[0].goals.total,
+            assists: jugador.statistics[0].goals.assists,
+            yellow_cards: jugador.statistics[0].cards.yellow,
+            red_cards: jugador.statistics[0].cards.red,
+            passes: jugador.statistics[0].passes.total,
+            passesAccuracy: jugador.statistics[0].passes.accuracy,
+            shots: jugador.statistics[0].shots.total,
+            shotsOnTarget: jugador.statistics[0].shots.on,
+            tackles: jugador.statistics[0].tackles.total,
+            duelsWon: jugador.statistics[0].duels.won
           },
         ]);
+        await supabase.from('notificaciones').insert({
+          event_type: 'player_recommended', // Tipo de evento
+          mensaje: `El entrenador ${user.nombre} ha recomendado al jugador ${jugador.player.name} como favorito.`, // Mensaje personalizado
+          id_users: user.id_users, // ID del administrador que recibirá la notificación
+          created_at: new Date() // Hora de creación
+        });
       }
     }
   };
 
-  const manejarSugerencia = (jugador, accion) => {
-    console.log(`${accion} sugerencia para el jugador:`, jugador);
-    // Aquí se puede implementar la lógica para aceptar o rechazar las sugerencias
-  };
+  const manejarSugerencia = async (jugador, accion) => {
+    // Verificar que el objeto jugador contenga los datos necesarios
+    if (!jugador || !jugador.player_id || !jugador.name || !jugador.position) {
+      console.error('Datos de jugador inválidos:', jugador);
+      return;
+    }
+  
+    if (accion === 'Aceptar') {
+      try {
+        // Agregar jugador a la tabla miequipo
+        const { error: insertError } = await supabase.from('miequipo').insert({
+          id_mijugador: jugador.player_id,
+          name: jugador.name,
+          position: jugador.position || 'N/A',
+          age: jugador.age || 'N/A',
+          appearances: jugador.appearances || 0,
+          goals: jugador.goals || 0,
+          assists: jugador.assists || 0,
+          yellow_cards: jugador.yellow_cards || 0,
+          red_cards: jugador.red_cards || 0,
+          passes: jugador.passes || 0,
+          passesAccuracy: jugador.passesAccuracy || 0,
+          shots: jugador.shots || 0,
+          shotsOnTarget: jugador.shotsOnTarget || 0,
+          tackles: jugador.tackles || 0,
+          duelsWon: jugador.duelsWon || 0,
+          photo: jugador.photo,
+          team: 'Argentinos Juniors', // Siempre será 'Argentinos Juniors'
+        });
+  
+        if (insertError) {
+          console.error('Error al agregar jugador a miequipo:', insertError);
+          return;
+        }
+  
+        // Eliminar jugador de la tabla favoritos_jugadores
+        const { error: deleteError } = await supabase
+          .from('favoritos_jugadores')
+          .delete()
+          .eq('player_id', jugador.player_id);
+  
+        if (deleteError) {
+          console.error('Error al eliminar jugador de favoritos:', deleteError);
+        } else {
+          // Actualizar el estado de los favoritos para que el jugador no se muestre más
+          setFavoritos(favoritos.filter((fav) => fav.name !== jugador.name));
 
+
+          await supabase.from('notificaciones').insert({
+            event_type: 'player_accepted', // Tipo de evento
+            mensaje: `El administrador ha aceptado al jugador ${jugador.name}.`, // Mensaje personalizado
+            id_users: null, // ID del entrenador que recibirá la notificación
+            created_at: new Date() // Hora de creación
+          });
+        }
+      } catch (error) {
+        console.error('Error al manejar sugerencia:', error);
+      }
+    } else if (accion === 'Rechazar') {
+      try {
+        // Eliminar jugador de la tabla favoritos_jugadores
+        const { error } = await supabase
+          .from('favoritos_jugadores')
+          .delete()
+          .eq('player_id', jugador.player_id);
+  
+        if (error) {
+          console.error('Error al eliminar jugador de favoritos:', error);
+        } else {
+          // Actualizar el estado de los favoritos para que el jugador no se muestre más
+          setFavoritos(favoritos.filter((fav) => fav.player_id !== jugador.player_id));
+          await supabase.from('notificaciones').insert({
+            event_type: 'player_rejected', // Tipo de evento
+            mensaje: `El administrador ha rechazado al jugador ${jugador.name}.`, // Mensaje personalizado
+            id_users: entrenadorId, // ID del entrenador que recibirá la notificación
+            created_at: new Date() // Hora de creación
+          });
+        }
+      } catch (error) {
+        console.error('Error al manejar sugerencia:', error);
+      }
+    }
+  };
   if (loading) {
     return <p>Cargando jugadores...</p>;
   }
@@ -188,3 +318,31 @@ const Transfers = () => {
 };
 
 export default Transfers;
+
+
+/*   const fetchJugadores = async () => {
+    try {
+      // Traer jugadores desde la API
+      const data = await getJugadores();
+      const { data: jugadoresMiequipo, error } = await supabase
+        .from('miequipo')
+        .select('id_mijugador'); // Obtener solo los IDs de los jugadores ya aceptados
+  
+      if (error) {
+        console.error('Error al cargar jugadores de miequipo:', error);
+        return;
+      }
+  
+      // Filtrar los jugadores que ya han sido aceptados en miequipo
+      const jugadoresFiltrados = data.filter(
+        (jugador) => !jugadoresMiequipo.some((mijugador) => mijugador.player_id === jugador.player.id)
+      );
+  
+      setJugadores(jugadoresFiltrados); // Guardar los jugadores no aceptados en el estado
+      await fetchFavoritos(); // Cargar los favoritos del entrenador
+    } catch (error) {
+      console.error('Error al cargar los jugadores:', error);
+    } finally {
+      setLoading(false);
+    }
+  }; */

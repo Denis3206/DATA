@@ -175,11 +175,11 @@ const Formation = ({
         selectedPlayer={selectedPlayer} 
       />
 
-      {selectedPlayer && (
+      {/* {selectedPlayer && (
         <div className="info">
           <p>Jugador Seleccionado: {selectedPlayer.name}</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

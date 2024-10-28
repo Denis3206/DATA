@@ -171,6 +171,12 @@ const Usuario = () => {
         if (error) {
             console.error('Error al modificar usuario:', error);
         } else {
+            await supabase.from('notificaciones').insert({
+                event_type: 'personal_change',
+                mensaje: `Tus datos han sido modificados.`,
+                id_users: selectedUser.id_users, // Notificar al usuario modificado
+                created_at: new Date(),
+            });
             setSelectedUser(null);
             setEditEmail('');
             setEditPassword('');

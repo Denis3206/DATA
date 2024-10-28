@@ -1,31 +1,41 @@
 .bench-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* No permitir que los jugadores se envuelvan */
+  overflow-x: auto; /* Permitir desplazamiento horizontal si hay demasiados jugadores */
   margin-top: 20px;
-  width: 100%; 
+  width: 100%;
   max-width: 900px; /* Mantener el ancho igual al del campo */
-  height: 100px;
+  height: 150px; /* Aumentar la altura del banco */
   box-sizing: border-box;
   flex-shrink: 0; /* Evitar que el banco se encoja */
   min-width: 900px; /* Mínimo ancho para asegurarse de que no se reduzca */
+  background-color: #f9f9f9; /* Fondo suave para el banco */
+  border: 2px solid #3b3b3b; /* Borde oscuro alrededor del banco */
+  border-radius: 10px; /* Bordes redondeados */
+  padding: 10px; /* Espacio interno */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra sutil */
 }
 
 .bench-player {
-  width: 60px;
-  height: 60px;
+  width: 100px; /* Aumentar el tamaño del jugador */
+  height: 100px; /* Aumentar el tamaño del jugador */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin: 5px;
+  margin: 10px; /* Aumentar el margen para más distancia entre jugadores */
   border-radius: 50%;
+  border: 2px solid #ccc; /* Borde claro para cada jugador */
+  background-color: #ffffff; /* Fondo blanco para los jugadores */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Transiciones suaves */
 }
 
-  .bench-player:hover {
-    background-color: #e0e0e0; /* Color de fondo más oscuro al pasar el ratón */
-  }
-  
-  .bench-player.selected {
-    border-color: #ff0000; /* Rojo para destacar la selección del suplente */
-  }
-  
+.bench-player:hover {
+  background-color: #e0e0e0; /* Color de fondo más oscuro al pasar el ratón */
+  transform: scale(1.05); /* Efecto de zoom al pasar el ratón */
+}
+
+.bench-player.selected {
+  border-color: #ff0000; /* Rojo para destacar la selección del suplente */
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.7); /* Sombra roja para resaltar la selección */
+}

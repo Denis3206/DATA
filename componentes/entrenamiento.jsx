@@ -12,22 +12,24 @@ const Entrenamiento = () => {
   const [listaRutinas, setListaRutinas] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Estado de carga
+  const [nombreUsuario, setNombreUsuario] = useState('');
 
   const navigate = useNavigate();
 
   const [jugadorId, setJugadorId] = useState(null); // Estado para almacenar el id del jugador
-
   useEffect(() => {
     const fetchUser = () => {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       console.log('Usuario cargado:', storedUser);
+      
       setUser(storedUser);
       return storedUser;
     };
   
     const fetchData = async () => {
       const fetchedUser = fetchUser();
-  
+      setNombreUsuario(fetchedUser.nombre);
+      
       if (fetchedUser) {
         const { data: jugadoresData, error: jugadoresError } = await supabase
           .from('miequipo')
@@ -92,12 +94,30 @@ const Entrenamiento = () => {
 
   const handleRutinaSubmit = async (e) => {
     e.preventDefault();
+    // Validaciones de fecha y hora
+    const { tipoEntrenamiento, fecha, tipoComida, horaComida } = rutina;
 
     if (!rutina.tipoEntrenamiento || !rutina.fecha || !rutina.tipoComida || !rutina.horaComida || !jugadorSeleccionado) {
       alert("Todos los campos son obligatorios");
       return;
     }
-
+    const fechaSeleccionada = new Date(fecha);
+    const fechaActual = new Date();
+  
+    if (fechaSeleccionada < fechaActual) {
+      alert("La fecha no puede ser en el pasado.");
+      return;
+    }
+  
+    // Validar que la hora de comida no sea pasada
+    const [hora, minutos] = horaComida.split(":").map(Number);
+    const fechaHoraComida = new Date(fechaSeleccionada);
+    fechaHoraComida.setHours(hora, minutos);
+  
+    if (fechaHoraComida < fechaActual) {
+      alert("La hora de comida no puede ser en el pasado.");
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from('routines') // Tabla donde guardas las rutinas
@@ -126,27 +146,69 @@ const Entrenamiento = () => {
       // Actualiza la lista local
       setListaRutinas((prev) => [...prev, nuevaRutina]);
       setRutina({ tipoEntrenamiento: '', fecha: '', tipoComida: '', horaComida: '' });
-    } catch (error) {
-      console.error("Error al agregar rutina:", error);
-    }
+
+      
+      await supabase.from('notificaciones')
+      .insert({
+        event_type: 'training_assigned', // Tipo de evento
+        mensaje: `Se ha asignado una nueva rutina de entrenamiento por ${nombreUsuario} para ${jugadorSeleccionado.name}.`, // Mensaje personalizado
+        id_users: jugadorSeleccionado.id_users, // ID del jugador que recibirá la notificación
+        created_at: new Date()
+      });
+
+  } catch (error) {
+    console.error("Error al agregar rutina:", error);
+  }
   };
 
-  const handleConfirmarRutina = async (rutinaId) => {
+  const handleConfirmarRutina = async (rutinaId, jugadorId, jugadorNombre) => {
     try {
+      // Actualiza el estado de la rutina a 'Realizado'
       const { data, error } = await supabase
-        .from('routines') // Tabla de rutinas
-        .update({ estado: 'Realizado' }) // Actualiza el estado a 'Realizado'
-        .eq('id_rutina', rutinaId); // Asegúrate de que 'id_rutina' sea el campo correcto
+          .from('routines')
+          .update({ estado: 'Realizado' })
+          .eq('id_rutina', rutinaId);
 
       if (error) throw error;
 
       // Actualiza la lista local tras la confirmación
       setListaRutinas(prev => prev.map(rutina => rutina.id_rutina === rutinaId ? { ...rutina, estado: 'Realizado' } : rutina));
-    } catch (error) {
-      console.error("Error al confirmar rutina:", error);
-    }
-  };
 
+      // Enviar notificación al entrenador
+      const { data: entrenadores, error: entrenadoresError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('role', 2); // Suponiendo que el rol 2 es para entrenadores
+
+      if (entrenadoresError) throw entrenadoresError;
+
+      for (const entrenador of entrenadores) {
+          await supabase.from('notificaciones').insert({
+              event_type: 'routine_completed',
+              mensaje: `El jugador ${jugadorNombre} ha completado la rutina.`,
+              id_users: entrenador.id_users, // Notificar al entrenador
+              created_at: new Date(),
+          });
+      }
+  } catch (error) {
+      console.error("Error al confirmar rutina:", error);
+  }
+};
+const fetchRutinasConJugadores = async () => {
+  const { data, error } = await supabase
+    .from('routines')
+    .select(`
+      *,
+      miequipo (name) // Suponiendo que la tabla de jugadores se llama 'miequipo' y el campo es 'name'
+    `);
+
+  if (error) {
+    console.error('Error al obtener rutinas con jugadores:', error);
+  } else {
+    setListaRutinas(data);
+  }
+};
+      fetchRutinasConJugadores();
   return (
     <div>
       <Navbar user={user} />
@@ -274,7 +336,7 @@ const Entrenamiento = () => {
                     <td>{rutina.hora_comida}</td>
                     <td>
                       {rutina.estado === 'Pendiente' ? (
-                        <button className="confirm-button" onClick={() => handleConfirmarRutina(rutina.id_rutina)}>Confirmar</button>
+                        <button className="confirm-button" onClick={() => handleConfirmarRutina(rutina.id_rutina, rutina.id_mijugador, rutina.miequipo?.name)}>Confirmar</button>
                       ) : (
                         <span>{rutina.estado}</span>
                       )}
