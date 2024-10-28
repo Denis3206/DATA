@@ -19,18 +19,29 @@ const Transfers = () => {
  
  
   useEffect(() => {
-    const storedRole = localStorage.getItem('userRole');
-    setRole(storedRole);
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    setUser(storedUser);
-
-    if (storedRole === '1') {
-      // Si es administrador, solo cargamos jugadores favoritos desde la base de datos
-      fetchFavoritos();
-    } else if (storedRole === '2') {
-      // Si es entrenador, cargamos jugadores desde la API y favoritos
-      fetchJugadores();
-    }
+    const fetchData = async()=>{
+      
+      const storedRole = localStorage.getItem('userRole');
+      setRole(storedRole);
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      setUser(storedUser);
+  
+      try{
+        await fetchMiEquipo();
+        if (storedRole === '1') {
+          // Si es administrador, solo cargamos jugadores favoritos desde la base de datos
+          fetchFavoritos();
+        } else if (storedRole === '2') {
+          // Si es entrenador, cargamos jugadores desde la API y favoritos
+          fetchJugadores();
+        }
+      }
+      catch(error){
+        console.error('Error al cargar los datos: ', error)
+      }
+     
+    };
+    fetchData();
   }, []);
   
   const fetchJugadores = async () => {
