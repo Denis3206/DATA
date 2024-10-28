@@ -45,6 +45,13 @@ const Transfers = () => {
   
   const fetchJugadores = async () => {
     try {
+       const { dato, error } = await supabase.from('miequipo').select('name');
+    if (error) {
+      console.error('Error al cargar los jugadores del equipo:', error);
+    } else {
+      setMiEquipo(dato.map(jugador => jugador.name)); // Almacenamos solo los IDs de los jugadores en miEquipo
+      console.log(dato);
+    }
       await fetchMiEquipo(); // Primero traemos los jugadores de 'miequipo'
       const data = await getJugadores(); // Luego traemos los jugadores desde la API
   
@@ -60,16 +67,6 @@ const Transfers = () => {
       console.error('Error al cargar los jugadores:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchMiEquipo = async () => {
-    const { data, error } = await supabase.from('miequipo').select('name');
-    if (error) {
-      console.error('Error al cargar los jugadores del equipo:', error);
-    } else {
-      setMiEquipo(data.map(jugador => jugador.name)); // Almacenamos solo los IDs de los jugadores en miEquipo
-      console.log(miEquipo);
     }
   };
 
