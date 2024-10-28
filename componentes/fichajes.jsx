@@ -49,7 +49,7 @@ const Transfers = () => {
     if (error) {
       console.error('Error al cargar los jugadores del equipo:', error);
     } else {
-      setMiEquipo(dato.map(jugador => jugador.name)); // Almacenamos solo los IDs de los jugadores en miEquipo
+     // Almacenamos solo los IDs de los jugadores en miEquipo
       console.log(dato);
     }
   
