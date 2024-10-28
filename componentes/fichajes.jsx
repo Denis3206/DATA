@@ -40,7 +40,7 @@ const Transfers = () => {
   
       // Filtrar jugadores de la API que ya están en 'miequipo'
       const jugadoresFiltrados = data.filter(
-        jugador => !miEquipo.some(miJugador => miJugador.toLowerCase() === jugador.player.name.toLowerCase())
+        jugador => !miEquipo.some(miJugador => miJugador.name.toLowerCase() === jugador.player.name.toLowerCase())
       );
   
       setJugadores(jugadoresFiltrados); // Guardamos solo los que no están en 'miequipo'
