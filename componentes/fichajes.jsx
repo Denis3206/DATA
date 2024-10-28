@@ -52,7 +52,7 @@ const Transfers = () => {
       setMiEquipo(dato.map(jugador => jugador.name)); // Almacenamos solo los IDs de los jugadores en miEquipo
       console.log(dato);
     }
-      await fetchMiEquipo(); // Primero traemos los jugadores de 'miequipo'
+  
       const data = await getJugadores(); // Luego traemos los jugadores desde la API
   
       // Filtrar jugadores de la API que ya están en 'miequipo'
