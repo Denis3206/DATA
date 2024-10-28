@@ -39,10 +39,11 @@ const Transfers = () => {
       const data = await getJugadores(); // Luego traemos los jugadores desde la API
   
       // Filtrar jugadores de la API que ya están en 'miequipo'
+      console.log(data);
       const jugadoresFiltrados = data.filter(
         jugador => !miEquipo.some(miJugador => miJugador.name.toLowerCase() === jugador.player.name.toLowerCase())
       );
-  
+  console.log(jugadoresFiltrados);
       setJugadores(jugadoresFiltrados); // Guardamos solo los que no están en 'miequipo'
       await fetchFavoritos(); // Cargar los favoritos del entrenador
     } catch (error) {
