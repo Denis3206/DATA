@@ -27,7 +27,6 @@ const Transfers = () => {
       setUser(storedUser);
   
       try{
-        await fetchMiEquipo();
         if (storedRole === '1') {
           // Si es administrador, solo cargamos jugadores favoritos desde la base de datos
           fetchFavoritos();
