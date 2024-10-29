@@ -21,7 +21,6 @@ const Transfers = () => {
  
  
   useEffect(() => {
-<<<<<<< HEAD
     const storedRole = localStorage.getItem('userRole');
     setRole(storedRole);
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -55,52 +54,6 @@ const Transfers = () => {
       console.log(jugadoresFiltrados)
       setJugadores(jugadoresFiltrados);
       await fetchFavoritos();
-=======
-    const fetchData = async()=>{
-      
-      const storedRole = localStorage.getItem('userRole');
-      setRole(storedRole);
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      setUser(storedUser);
-  
-      try{
-        if (storedRole === '1') {
-          // Si es administrador, solo cargamos jugadores favoritos desde la base de datos
-          fetchFavoritos();
-        } else if (storedRole === '2') {
-          // Si es entrenador, cargamos jugadores desde la API y favoritos
-          fetchJugadores();
-        }
-      }
-      catch(error){
-        console.error('Error al cargar los datos: ', error)
-      }
-     
-    };
-    fetchData();
-  }, []);
-  
-  const fetchJugadores = async () => {
-    try {
-       const { dato, error } = await supabase.from('miequipo').select('name');
-    if (error) {
-      console.error('Error al cargar los jugadores del equipo:', error);
-    } else {
-     // Almacenamos solo los IDs de los jugadores en miEquipo
-      console.log(dato);
-    }
-  
-      const data = await getJugadores(); // Luego traemos los jugadores desde la API
-  
-      // Filtrar jugadores de la API que ya están en 'miequipo'
-      console.log(data);
-      const jugadoresFiltrados = data.filter(
-        jugador => !miEquipo.some(miJugador => miJugador.toLowerCase() === jugador.player.name.toLowerCase())
-      );
-  console.log(jugadoresFiltrados);
-      setJugadores(jugadoresFiltrados); // Guardamos solo los que no están en 'miequipo'
-      await fetchFavoritos(); // Cargar los favoritos del entrenador
->>>>>>> d7e8b3916c638a0b79949cd859ae38980e271795
     } catch (error) {
       console.error('Error al cargar los jugadores:', error);
     } finally {
@@ -109,7 +62,6 @@ const Transfers = () => {
   };
   
 
-<<<<<<< HEAD
   const fetchMiEquipo = async () => {
     const { data, error } = await supabase.from('miequipo').select('name');
     if (error) {
@@ -120,8 +72,6 @@ const Transfers = () => {
     }
   };
 
-=======
->>>>>>> d7e8b3916c638a0b79949cd859ae38980e271795
 
   const fetchFavoritos = async () => {
     // Consulta jugadores favoritos desde la tabla favoritos_jugadores
