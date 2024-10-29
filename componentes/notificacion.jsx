@@ -28,7 +28,8 @@ useEffect(() => {
           return true;
         } else if (role == 2) {
           // Entrenador: ve notificaciones relacionadas con sus jugadores o rutinas
-          return notificacion.event_type === 'routine_completed' || notificacion.event_type === 'player_recommended';
+          return notificacion.event_type === 'routine_completed' || notificacion.event_type === 'player_recommended' || notificacion.event_type === 'player_accepted'
+          || notificacion.event_type === 'player_rejected';
         } else if (role == 3) {
           // Jugador: ve solo las notificaciones que le corresponden a él
           return (

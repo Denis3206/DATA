@@ -14,6 +14,8 @@ const Transfers = () => {
   const [miEquipo, setMiEquipo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+  const [miEquipoLoaded, setMiEquipoLoaded] = useState(false);
+
   const navigate = useNavigate();
 
  
@@ -23,41 +25,50 @@ const Transfers = () => {
     setRole(storedRole);
     const storedUser = JSON.parse(localStorage.getItem('user'));
     setUser(storedUser);
-
-    if (storedRole === '1') {
-      // Si es administrador, solo cargamos jugadores favoritos desde la base de datos
+  
+    if (storedRole === '2') {
+      fetchMiEquipo();
+    } else if (storedRole === '1') {
       fetchFavoritos();
-    } else if (storedRole === '2') {
-      // Si es entrenador, cargamos jugadores desde la API y favoritos
-      fetchJugadores();
     }
   }, []);
   
-  const fetchJugadores = async () => {
-    try {
-      await fetchMiEquipo(); // Primero traemos los jugadores de 'miequipo'
-      const data = await getJugadores(); // Luego traemos los jugadores desde la API
+  useEffect(() => {
+    if (miEquipo.length > 0 && role === '2' && !miEquipoLoaded) {
+      fetchJugadores();
+      setMiEquipoLoaded(true); // Evitar futuras llamadas
+    }
+  }, [miEquipo, role, miEquipoLoaded]);
   
-      // Filtrar jugadores de la API que ya están en 'miequipo'
+  
+  const fetchJugadores = async () => {
+    console.log('fetchJugadores llamado');
+    try {
+      const data = await getJugadores();
+      console.log(data);
+      console.log(miEquipo);
       const jugadoresFiltrados = data.filter(
         jugador => !miEquipo.some(miJugador => miJugador.toLowerCase() === jugador.player.name.toLowerCase())
       );
-  
-      setJugadores(jugadoresFiltrados); // Guardamos solo los que no están en 'miequipo'
-      await fetchFavoritos(); // Cargar los favoritos del entrenador
+      
+      console.log(jugadoresFiltrados)
+      setJugadores(jugadoresFiltrados);
+      await fetchFavoritos();
     } catch (error) {
       console.error('Error al cargar los jugadores:', error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const fetchMiEquipo = async () => {
     const { data, error } = await supabase.from('miequipo').select('name');
     if (error) {
       console.error('Error al cargar los jugadores del equipo:', error);
     } else {
-      setMiEquipo(data.map(jugador => jugador.name)); // Almacenamos solo los IDs de los jugadores en miEquipo
+      console.log('Datos recibidos de Supabase:', data); // Verificar los datos recibidos
+      setMiEquipo(data.map(jugador => jugador.name)); // Almacenar solo los nombres de los jugadores en miEquipo
     }
   };
 
@@ -219,7 +230,7 @@ const Transfers = () => {
           await supabase.from('notificaciones').insert({
             event_type: 'player_rejected', // Tipo de evento
             mensaje: `El administrador ha rechazado al jugador ${jugador.name}.`, // Mensaje personalizado
-            id_users: entrenadorId, // ID del entrenador que recibirá la notificación
+            id_users: null, // ID del entrenador que recibirá la notificación
             created_at: new Date() // Hora de creación
           });
         }
