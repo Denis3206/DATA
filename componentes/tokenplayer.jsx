@@ -14,15 +14,17 @@ export default PlayerToken;
 import React from 'react';
 import '../style/playertoken.css';
 
-const PlayerToken = ({ player }) => {
+const PlayerToken = ({ player, teamName }) => { // Aceptar teamName como prop
   return (
     <div className="player-token-container">
       {player ? (
         <>
-          <div className="player-token">
+            <div className="player-token">
             <img src={player.photo} alt={player.name} className="player-photo" />
           </div>
+          
           <div className="player-name">{player.name}</div>
+          
         </>
       ) : (
         <div className="empty-token">Vacío</div>

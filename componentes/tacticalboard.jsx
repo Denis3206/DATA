@@ -60,6 +60,7 @@ const Tactics = () => {
     return data.map(player => ({
         id: player.id_mijugador, 
         name: player.name,
+        position: player.position,
         photo: player.photo, 
         team: player.team,
         appearances: player.appearances, // Estadísticas del jugador
@@ -73,7 +74,6 @@ const Tactics = () => {
         shotsOnTarget: player.shotsOnTarget,
         tackles: player.tackles,
         duelsWon: player.duelsWon,
-        containerId: 'team1-container'
     }));
   };
 
@@ -102,7 +102,6 @@ const Tactics = () => {
       },
     });
     const data = await response.json();
-    const teamName = teams.find(team => team.id === teamId)?.name; 
     console.log(data); 
     setSubstitutes(data.response.map(player => {
       // Verifica si statistics existe y es un arreglo
@@ -112,6 +111,7 @@ const Tactics = () => {
         id: player.player.id,
         name: player.player.name,
         photo: player.player.photo,
+        position: player.statistics[0].games.position,
         appearances: player.statistics[0].games.appearances || 0,
         goals: player.statistics[0].goals.total || 0,
         assists: player.statistics[0].goals.assists || 0,
@@ -123,7 +123,7 @@ const Tactics = () => {
         shotsOnTarget: player.statistics[0].shots.on || 0,
         tackles: player.statistics[0].tackles.total || 0,
         duelsWon: player.statistics[0].duels.won || 0,
-        containerId: 'team2-container',
+        team: player.statistics[0].team.name || 0
       };
     }));
   };
@@ -164,7 +164,7 @@ const Tactics = () => {
 
 
   // Mover jugador de la banca al campo o viceversa (manteniendo la lógica)
-  const handlePlayerMove = (player, team) => {
+/*   const handlePlayerMove = (player, team) => {
     const currentTeam = team === 'team1' ? 'team1' : selectedTeam2; 
 
     if (team === 'team1') {
@@ -194,7 +194,7 @@ const Tactics = () => {
             }
         }
     }
-  };
+  }; */
   return (
     <div>
       <Navbar user={user} />
@@ -222,7 +222,7 @@ const Tactics = () => {
           
           <Formation
              formation={formationTeam1}
-             team="Mi Equipo"
+             team="Argentinos juniors"
              containerId={containerIdTeam1}
              mainPlayers={mainPlayersTeam1}
              setMainPlayers={setMainPlayersTeam1}
@@ -231,7 +231,6 @@ const Tactics = () => {
              onSelectPlayer={setSelectedPlayer}
              selectedPlayer={selectedPlayer}
              setSelectedPlayer={setSelectedPlayer}
-             onPlayerMove={handlePlayerMove}
           />
         </div>
         <div className="simulate-button-container">
@@ -272,7 +271,6 @@ const Tactics = () => {
              onSelectPlayer={setSelectedPlayer}
              selectedPlayer={selectedPlayer}
              setSelectedPlayer={setSelectedPlayer}
-             onPlayerMove={handlePlayerMove}
           />
         </div>
         

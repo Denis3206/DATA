@@ -33,7 +33,9 @@ const Navbar = ({ user }) => {
     <nav className="navbar">
       <div className="navbar-logo">
         {/* Cambia la ruta de la imagen a LOGO.svg */}
+        <a href="/dashboard">
         <img src="../img/LOGO.svg" alt="Logo" className="logo-image" />
+        </a>
       </div>
       <div className="navbar-user-info">
         {user ? <p>Hola {user.nombre}</p> : <p>Cargando usuario...</p>}
