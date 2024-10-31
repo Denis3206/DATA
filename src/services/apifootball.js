@@ -52,21 +52,32 @@ export const getStandingsInArgentinaLeague = async (season = 2022) => {
   };
 
 
-  export const getTeamStats = async () => {
+  export const getTeamStats = async (teamId) => { 
     try {
-      const response = await apiFootball.get(`/teams/statistics`, {
-        params: {
-          league: ligaArgentinaId,
-          season: season,
-          team: argentinosJuniorsId,
-        },
+      // Cambia la URL al endpoint correcto de tu API para obtener las estadísticas del equipo
+      const response = await fetch(`https://v3.football.api-sports.io/teams/${teamId}/stats`, {
+        headers: {
+          'x-apisports-key': API_KEY, // Asegúrate de incluir tu clave API
+          'Content-Type': 'application/json' // Puede que necesites este encabezado
+        }
       });
-      return response.data.response;
+  
+      // Verifica que la respuesta sea exitosa
+      if (!response.ok) {
+        throw new Error(`Error al obtener estadísticas del equipo: ${response.statusText}`);
+      }
+  
+      // Convierte la respuesta en JSON
+      const data = await response.json();
+      
+      // Asegúrate de devolver los datos en la forma que necesitas
+      return data; // Cambia esto si es necesario para acceder a la estructura de datos
     } catch (error) {
-      console.error('Error al obtener las estadísticas del equipo:', error);
-      return null;
+      console.error("Error al obtener estadísticas del equipo:", error);
+      return null; // Devuelve null en caso de error
     }
   };
+
   export const getTeamPlayers = async () => {
     try {
       const response = await apiFootball.get(`/players`, {

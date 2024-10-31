@@ -23,12 +23,25 @@ const formationMapping = {
     { position: 'Defender', top: '33%', left: '24%' },
     { position: 'Defender', top: '17%', left: '30%' },
     { position: 'Defender', top: '75%', left: '30%' },
-    { position: 'Midfielder', top: '46%', left: '40%' },
+    { position: 'Midfielder', top: '42%', left: '40%' },
     { position: 'Midfielder', top: '17%', left: '50%' },
     { position: 'Midfielder', top: '75%', left: '50%' },
     { position: 'Midfielder', top: '45%', left: '60%' },
     { position: 'Attacker', top: '33%', left: '70%' },
     { position: 'Attacker', top: '57%', left: '70%' },
+  ],
+  "4-3-3": [
+    { position: 'Goalkeeper', top: '46%', left: '10%' },
+    { position: 'Defender', top: '55%', left: '24%' },
+    { position: 'Defender', top: '33%', left: '24%' },
+    { position: 'Defender', top: '17%', left: '30%' },
+    { position: 'Defender', top: '75%', left: '30%' },
+    { position: 'Midfielder', top: '44%', left: '40%' },
+    { position: 'Midfielder', top: '17%', left: '50%' },
+    { position: 'Midfielder', top: '75%', left: '50%' },
+    { position: 'Attacker', top: '17%', left: '70%' },
+    { position: 'Attacker', top: '44%', left: '70%' },
+    { position: 'Attacker', top: '75%', left: '70%' },
   ]
 };
 
@@ -39,130 +52,102 @@ const Formation = ({
   setMainPlayers, 
   substitutes, 
   setSubstitutes, 
-  selectedPlayer, 
-  setSelectedPlayer 
 }) => {
-  const [teamNames, setTeamNames] = useState(new Array(formation.length).fill(null));
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [selectedPosition, setSelectedPosition] = useState(null);
 
   const currentFormation = formationMapping[formation];
 
   const isPositionAndTeamMatching = (tokenPosition, player) => {
-    return tokenPosition === player.position && player.team === team;
-  };
+    return player && tokenPosition === player.position && player.team === team;
+};
 
-  const handlePositionClick = (index) => {
-    const tokenPosition = currentFormation[index].position;
+const handlePositionClick = (index) => {
+  const currentPlayer = mainPlayers[index];
+  const tokenPosition = currentFormation[index]?.position;
 
-    if (mainPlayers[index]) {
-      // Si el token ya está ocupado, seleccionamos el jugador
-      const currentPlayer = mainPlayers[index];
-      // Si hay un jugador seleccionado, intercambiamos
-      if (selectedPlayer) {
-        // Intercambiar entre dos jugadores en el campo
-        if (selectedPosition !== null && selectedPosition !== index) {
-          const updatedPlayers = [...mainPlayers];
-          updatedPlayers[selectedPosition] = currentPlayer; // Mover el jugador actual a la posición anterior
-          updatedPlayers[index] = selectedPlayer; // Mover el jugador seleccionado a la nueva posición
-          setMainPlayers(updatedPlayers);
+  // Si hay un jugador seleccionado de la banca
+  if (selectedPlayer) {
+    // Caso 1: Colocar un jugador de la banca en una posición ocupada en el campo
+    if (currentPlayer) {
+      // Verifica si el jugador seleccionado ya está en el campo
+      if (mainPlayers.includes(selectedPlayer)) {
+        alert('No se puede realizar el intercambio: el jugador ya está en el campo.');
+        resetSelection();
+        return;
+      }
 
-          // Limpiar selección
-          setSelectedPlayer(null);
-          setSelectedPosition(null);
+      // Intercambio entre un jugador del campo y uno de la banca
+      if (isPositionAndTeamMatching(tokenPosition, selectedPlayer)) {
+        const updatedPlayers = [...mainPlayers];
+        const updatedSubstitutes = [...substitutes];
+
+        // Realiza el intercambio
+        updatedPlayers[index] = selectedPlayer; // Coloca el jugador de la banca en la posición
+        updatedSubstitutes.push(currentPlayer); // Devuelve el jugador del campo a la banca
+
+        // Elimina el jugador de la banca que se está colocando
+        const benchIndex = updatedSubstitutes.indexOf(selectedPlayer);
+        if (benchIndex > -1) {
+          updatedSubstitutes.splice(benchIndex, 1);
         }
+
+        setMainPlayers(updatedPlayers);
+        setSubstitutes(updatedSubstitutes);
+        resetSelection();
       } else {
-        // Solo seleccionar el jugador del campo
-        setSelectedPlayer(currentPlayer);
-        setSelectedPosition(index);
+        alert('El jugador de la banca no puede ocupar esa posición en el campo.');
       }
     } else {
-      // Si el token está vacío y hay un jugador seleccionado
-      if (selectedPlayer) {
-        if (isPositionAndTeamMatching(tokenPosition, selectedPlayer)) {
-          // Asignar el jugador al nuevo token
-          const updatedPlayers = [...mainPlayers];
-          const previousPosition = selectedPosition !== null ? selectedPosition : index;
+      // Caso 2: Colocar un jugador de la banca en una posición vacía en el campo
+      if (isPositionAndTeamMatching(tokenPosition, selectedPlayer)) {
+        const updatedPlayers = [...mainPlayers];
+        const updatedSubstitutes = [...substitutes];
 
-          // Si hay una posición anterior ocupada, la vaciamos
-          if (previousPosition !== index && mainPlayers[previousPosition]) {
-            updatedPlayers[previousPosition] = null; // Hacer el token anterior vacío
-          }
-
-          updatedPlayers[index] = selectedPlayer; // Asignar el jugador al nuevo token
-          setMainPlayers(updatedPlayers);
-
-          // Eliminar el jugador del banco de suplentes
-          const updatedSubstitutes = substitutes.filter(player => player !== selectedPlayer);
-          setSubstitutes(updatedSubstitutes);
-
-          // Actualizar el nombre del equipo
-          const updatedTeamNames = [...teamNames];
-          updatedTeamNames[index] = selectedPlayer.team;
-          setTeamNames(updatedTeamNames);
-
-          // Limpiar selección
-          setSelectedPlayer(null);
-          setSelectedPosition(null);
-        } else {
-          alert('El jugador no coincide en posición o no pertenece al mismo equipo.');
+        // Verifica si el jugador seleccionado ya está en el campo
+        if (mainPlayers.includes(selectedPlayer)) {
+          alert('No se puede realizar el intercambio: el jugador ya está en el campo.');
+          resetSelection();
+          return;
         }
+
+        updatedPlayers[index] = selectedPlayer;
+
+        // Elimina el jugador de la banca
+        const benchIndex = updatedSubstitutes.indexOf(selectedPlayer);
+        if (benchIndex > -1) {
+          updatedSubstitutes.splice(benchIndex, 1);
+        }
+
+        setMainPlayers(updatedPlayers);
+        setSubstitutes(updatedSubstitutes);
+        resetSelection();
+      } else {
+        alert('El jugador no puede ocupar esa posición en el campo.');
       }
     }
-  };
-
-  const handleBenchPlayerClick = (benchIndex) => {
-    const benchPlayer = substitutes[benchIndex];
-
-    // Verifica si hay un jugador seleccionado del campo
-    if (selectedPlayer) {
-      // Intercambiar el jugador del banco con el seleccionado en el campo
-      if (selectedPosition !== null) {
-        const tokenPosition = currentFormation[selectedPosition].position;
-
-        // Solo permitir el intercambio si la posición coincide
-        if (isPositionAndTeamMatching(tokenPosition, benchPlayer)) {
-          const updatedPlayers = [...mainPlayers];
-          const updatedSubstitutes = [...substitutes];
-
-          // Mover el jugador del banco al campo
-          updatedPlayers[selectedPosition] = benchPlayer; // Mover el jugador del banco al campo
-          updatedSubstitutes[benchIndex] = selectedPlayer; // Mover el jugador del campo al banco
-
-          setMainPlayers(updatedPlayers);
-          setSubstitutes(updatedSubstitutes);
-
-          // Limpiar selección
-          setSelectedPlayer(null);
-          setSelectedPosition(null);
-        } else {
-          alert('El jugador del banco no puede entrar en esa posición.');
-        }
-      }
-    } else {
-      // Seleccionar el jugador del banco
-      setSelectedPlayer(benchPlayer);
-      setSelectedPosition(null);
+  } else {
+    // Si no hay jugador de la banca seleccionado, selecciona el jugador del campo
+    if (currentPlayer) {
+      setSelectedPlayer(currentPlayer);
+      setSelectedPosition(index);
     }
-  };
+  }
+};
 
-  const handleRemoveClick = () => {
-    if (selectedPosition !== null && mainPlayers[selectedPosition]) {
-      const updatedPlayers = [...mainPlayers];
-      const removedPlayer = updatedPlayers[selectedPosition];
-      updatedPlayers[selectedPosition] = null;
+// Función para manejar clics en los jugadores de la banca
+const handleBenchPlayerClick = (benchPlayer) => {
+  // Selecciona un jugador de la banca
+  setSelectedPlayer(benchPlayer);
+  setSelectedPosition(null); // Resetea la posición seleccionada ya que es un jugador de la banca
+};
 
-      // Limpia el nombre del equipo al retirar el jugador
-      const updatedTeamNames = [...teamNames];
-      updatedTeamNames[selectedPosition] = null;
-      setTeamNames(updatedTeamNames);
+// Función para restablecer la selección
+const resetSelection = () => {
+  setSelectedPlayer(null);
+  setSelectedPosition(null);
+};
 
-      setMainPlayers(updatedPlayers);
-      
-      // Añadir el jugador retirado al banco de suplentes
-      setSubstitutes(prev => [...prev, removedPlayer]);
-      setSelectedPosition(null);
-    }
-  };
 
   return (
     <div className="field-and-bench-container">
@@ -175,7 +160,9 @@ const Formation = ({
             style={{ top: pos.top, left: pos.left, position: 'absolute' }}
           >
             {mainPlayers[index] ? (
-              <PlayerToken player={mainPlayers[index]} teamName={teamNames[index]} /> 
+              <div>
+                <PlayerToken player={mainPlayers[index]} onClick={() => handlePositionClick(index)} /> 
+              </div>
             ) : (
               <div className="empty-token" /> 
             )}
@@ -183,21 +170,10 @@ const Formation = ({
         ))}
       </div>
 
-      <div className="remove-button-container">
-        <button
-          onClick={handleRemoveClick}
-          className="remove-button"
-          disabled={!mainPlayers.some(player => player)}
-        >
-          Retirar Jugador
-        </button>
-      </div>
-
       <PlayerBench 
         players={substitutes} 
-        onSelectPlayer={setSelectedPlayer} 
+        onSelectPlayer={handleBenchPlayerClick} 
         selectedPlayer={selectedPlayer} 
-        onBenchPlayerClick={handleBenchPlayerClick} // Agregar la función de click del banco
       />
     </div>
   );

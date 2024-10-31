@@ -4,6 +4,8 @@
   align-items: center; /* Centra los elementos horizontalmente */
   gap: 20px; 
   margin: 20px 0;
+  width: 55%;
+  justify-content: space-between;
 }
 
 /* Para pantallas pequeñas (móviles) */
@@ -46,6 +48,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-bottom: 15px;
 }
 
 .simulate-match-button:hover {
@@ -55,7 +58,7 @@
 .match-result {
   background-color: #f4f4f4; /* Color de fondo suave */
   border-radius: 8px; /* Bordes redondeados */
-  padding: 20px; /* Espaciado interno */
+  padding: 15px; /* Espaciado interno */
   margin: 20px 0; /* Margen superior e inferior */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
@@ -115,4 +118,85 @@
 
 .player-stats {
   color: #27ae60; /* Color para goles y asistencias */
+}
+.tactics-container {
+  padding: 20px;
+}
+
+.main-content {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+.match-result-container {
+  width: 30%; /* Ajusta el ancho según prefieras */
+}
+.empty-match-result {
+  background-color: #f1f1f1;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  color: #777;
+}
+
+.empty-stats {
+  display: flex;
+  justify-content: space-around;
+}
+
+.empty-team-info {
+  background-color: #e0e0e0;
+  padding: 10px;
+  border-radius: 8px;
+  width: 45%;
+}
+
+.empty-team-info h4 {
+  color: #333;
+}
+
+.empty-team-info p,
+.empty-team-info ul {
+  color: #888;
+}
+
+.right-container {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.empty-match-result, .match-result {
+  width: 100%;
+  background-color: #e0e0e0;
+  padding: 20px;
+  border-radius: 8px;
+  color: #555;
+}
+
+.empty-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.empty-team-info {
+  width: 45%;
+  padding: 10px;
+  background-color: #dcdcdc;
+  border-radius: 8px;
+}
+
+.simulate-match-button {
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
 }
